@@ -1,1 +1,1 @@
-const year = new Date("13/Jul/2023".split("/")[2]).getFullYear().toString();
+const month = new Date("13/Jul/2023".split("/")[1]).toLocaleString('default', { month: 'long' });
