@@ -1,13 +1,1 @@
- onColumnRowGroupChanged() {
-    const rowGroupColumns = this.gridApi?.getColumnState().filter((col) => col.rowGroup);
-    const sampleFieldsColumnIndex = this.columnDefs.findIndex((col) => col.field === 'sampleField');
-
-    if (sampleFieldsColumnIndex >= 0) {
-      const yearColumn = { headerName: 'Year', field: 'year', rowGroup: true };
-      const monthColumn = { headerName: 'Month', field: 'month', rowGroup: true };
-
-      this.columnDefs.splice(sampleFieldsColumnIndex + 1, 0, yearColumn, monthColumn);
-
-      this.gridOptions.api?.setColumnDefs(this.columnDefs);
-    }
-  }
+const year = new Date("13/Jul/2023".split("/")[2]).getFullYear().toString();
