@@ -1,20 +1,21 @@
-var columnApi = gridOptions.columnApi; // Or use gridOptions.api for GridApi
-var targetColumnField = 'targetColumn'; // Replace with the field name of the target column
+var gridApi = gridOptions.api; // Use gridOptions.api to access the GridApi object
+var columnApi = gridOptions.columnApi;
+
+var targetColumnFields = ['column1', 'column2']; // Replace with the field names of the target columns
 
 // Get the current column definitions
 var columnDefs = columnApi.getColumnDefs();
 
-// Find the target column within the column definitions
-var targetColumnIndex = columnDefs.findIndex((column) => column.field === targetColumnField);
+// Modify the column definitions to set the target columns as row grouping columns
+var updatedColumnDefs = columnDefs.map(function(columnDef) {
+  if (targetColumnFields.includes(columnDef.field)) {
+    return {
+      ...columnDef,
+      rowGroup: true,
+    };
+  }
+  return columnDef;
+});
 
-if (targetColumnIndex >= 0) {
-  // Create a new array of column definitions with the modified column
-  var updatedColumnDefs = [...columnDefs];
-  updatedColumnDefs[targetColumnIndex] = {
-    ...updatedColumnDefs[targetColumnIndex],
-    rowGroup: true,
-  };
-
-  // Apply the updated column definitions
-  columnApi.setColumnDefs(updatedColumnDefs);
-}
+// Apply the updated column definitions
+gridApi.setColumnDefs(updatedColumnDefs);
