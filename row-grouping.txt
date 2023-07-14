@@ -1,1 +1,20 @@
-const month = new Date("13/Jul/2023".split("/")[1]).toLocaleString('default', { month: 'long' });
+var columnApi = gridOptions.columnApi; // Or use gridOptions.api for GridApi
+var targetColumnField = 'targetColumn'; // Replace with the field name of the target column
+
+// Get the current column definitions
+var columnDefs = columnApi.getColumnDefs();
+
+// Find the target column within the column definitions
+var targetColumnIndex = columnDefs.findIndex((column) => column.field === targetColumnField);
+
+if (targetColumnIndex >= 0) {
+  // Create a new array of column definitions with the modified column
+  var updatedColumnDefs = [...columnDefs];
+  updatedColumnDefs[targetColumnIndex] = {
+    ...updatedColumnDefs[targetColumnIndex],
+    rowGroup: true,
+  };
+
+  // Apply the updated column definitions
+  columnApi.setColumnDefs(updatedColumnDefs);
+}
