@@ -8,7 +8,7 @@ import { GridApi, Column } from 'ag-grid-community';
 })
 export class GridComponent {
   private gridApi: GridApi;
-  private prevColumns: Column[] = []; // Track the previous columns
+  private prevRowGroupColumns: string[] = []; // Track the previous row grouping column fields
 
   public columnDefs: any[];
   public rowData: any[];
@@ -30,18 +30,17 @@ export class GridComponent {
   }
 
   onAfterColumnsChanged() {
-    const currentColumns = this.gridApi.getAllColumns();
-
-    const removedColumns = this.prevColumns.filter((prevCol) => {
-      return !currentColumns.some((currentCol) => currentCol.colId === prevCol.colId);
-    });
+    const currentRowGroupColumns = this.gridApi.getRowGroupColumns();
+    const removedColumns = this.prevRowGroupColumns.filter(
+      (field) => !currentRowGroupColumns.some((col) => col.getColDef().field === field)
+    );
 
     if (removedColumns.length > 0) {
       // Perform actions for the removed columns
-      console.log('Removed Columns:', removedColumns.map((col) => col.colDef.headerName));
+      console.log('Removed Columns:', removedColumns);
     }
 
-    // Update the previous columns
-    this.prevColumns = currentColumns;
+    // Update the previous row grouping column fields
+    this.prevRowGroupColumns = currentRowGroupColumns.map((col) => col.getColDef().field);
   }
 }
