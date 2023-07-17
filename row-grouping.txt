@@ -1,21 +1,47 @@
-var gridApi = gridOptions.api; // Use gridOptions.api to access the GridApi object
-var columnApi = gridOptions.columnApi;
+import { Component } from '@angular/core';
+import { GridApi } from 'ag-grid-community';
 
-var targetColumnFields = ['column1', 'column2']; // Replace with the field names of the target columns
+@Component({
+  selector: 'app-grid-component',
+  templateUrl: './grid.component.html',
+  styleUrls: ['./grid.component.css']
+})
+export class GridComponent {
+  private gridApi: GridApi;
+  public columnDefs: any[];
+  public rowData: any[];
+  private prevRowGroupColumns: any[] = []; // Track the previous row grouping columns
 
-// Get the current column definitions
-var columnDefs = columnApi.getColumnDefs();
+  constructor() {
+    this.columnDefs = [
+      { headerName: 'Column 1', field: 'field1', rowGroup: true },
+      { headerName: 'Column 2', field: 'field2', rowGroup: true },
+      // Add more columns with rowGroup: true
+    ];
 
-// Modify the column definitions to set the target columns as row grouping columns
-var updatedColumnDefs = columnDefs.map(function(columnDef) {
-  if (targetColumnFields.includes(columnDef.field)) {
-    return {
-      ...columnDef,
-      rowGroup: true,
-    };
+    this.rowData = [
+      // Populate with your data...
+    ];
   }
-  return columnDef;
-});
 
-// Apply the updated column definitions
-gridApi.setColumnDefs(updatedColumnDefs);
+  onGridReady(params: any) {
+    this.gridApi = params.api;
+  }
+
+  onColumnRowGroupChanged() {
+    const rowGroupColumns = this.gridApi.getRowGroupColumns();
+    const removedColumns = this.prevRowGroupColumns.filter((col) => !rowGroupColumns.includes(col));
+
+    if (removedColumns.length > 0) {
+      // Check if the particular column is removed
+      const targetColumn = removedColumns.find((col) => col.field === 'field1');
+      if (targetColumn) {
+        // Perform actions for the removed column
+        console.log("Column 'field1' is removed from the row grouping.");
+      }
+    }
+
+    // Update the previous row grouping columns
+    this.prevRowGroupColumns = [...rowGroupColumns];
+  }
+}
