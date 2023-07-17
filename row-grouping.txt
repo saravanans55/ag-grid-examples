@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { GridApi } from 'ag-grid-community';
+import { GridApi, Column } from 'ag-grid-community';
 
 @Component({
   selector: 'app-grid-component',
@@ -8,6 +8,8 @@ import { GridApi } from 'ag-grid-community';
 })
 export class GridComponent {
   private gridApi: GridApi;
+  private prevColumns: Column[] = []; // Track the previous columns
+
   public columnDefs: any[];
   public rowData: any[];
 
@@ -27,13 +29,19 @@ export class GridComponent {
     this.gridApi = params.api;
   }
 
-  onColumnRowGroupChanged(event: any) {
-    const rowGroupColumns = this.gridApi.getRowGroupColumns();
-    const removedColumns = event.columns.filter((col: any) => !rowGroupColumns.includes(col));
+  onAfterColumnsChanged() {
+    const currentColumns = this.gridApi.getAllColumns();
+
+    const removedColumns = this.prevColumns.filter((prevCol) => {
+      return !currentColumns.some((currentCol) => currentCol.colId === prevCol.colId);
+    });
 
     if (removedColumns.length > 0) {
       // Perform actions for the removed columns
-      console.log("Removed columns:", removedColumns);
+      console.log('Removed Columns:', removedColumns.map((col) => col.colDef.headerName));
     }
+
+    // Update the previous columns
+    this.prevColumns = currentColumns;
   }
 }
