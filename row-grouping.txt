@@ -10,7 +10,6 @@ export class GridComponent {
   private gridApi: GridApi;
   public columnDefs: any[];
   public rowData: any[];
-  private prevRowGroupColumns: any[] = []; // Track the previous row grouping columns
 
   constructor() {
     this.columnDefs = [
@@ -28,20 +27,13 @@ export class GridComponent {
     this.gridApi = params.api;
   }
 
-  onColumnRowGroupChanged() {
+  onColumnRowGroupChanged(event: any) {
     const rowGroupColumns = this.gridApi.getRowGroupColumns();
-    const removedColumns = this.prevRowGroupColumns.filter((col) => !rowGroupColumns.includes(col));
+    const removedColumns = event.columns.filter((col: any) => !rowGroupColumns.includes(col));
 
     if (removedColumns.length > 0) {
-      // Check if the particular column is removed
-      const targetColumn = removedColumns.find((col) => col.field === 'field1');
-      if (targetColumn) {
-        // Perform actions for the removed column
-        console.log("Column 'field1' is removed from the row grouping.");
-      }
+      // Perform actions for the removed columns
+      console.log("Removed columns:", removedColumns);
     }
-
-    // Update the previous row grouping columns
-    this.prevRowGroupColumns = [...rowGroupColumns];
   }
 }
