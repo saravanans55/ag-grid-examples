@@ -1,59 +1,11 @@
 // Assuming the date format in the column is "18 Jul 2023"
 function customDateFilter(dateToSearch, cellValue) {
-  // Split the cellValue and search date into day, month, and year parts
-  const [cellDay, cellMonth, cellYear] = cellValue.split(" ");
-  const [searchDay, searchMonth, searchYear] = dateToSearch.split(" ");
+  // Convert the cellValue to lowercase for case-insensitive comparison
+  const lowerCellValue = cellValue.toLowerCase();
 
-  // Convert the day to a number
-  const cellDayNum = parseInt(cellDay);
-  const searchDayNum = parseInt(searchDay);
+  // Convert the search query to lowercase for case-insensitive comparison
+  const lowerSearchValue = dateToSearch.toLowerCase();
 
-  // Convert month abbreviation to a numerical month value
-  const monthAbbreviations = {
-    Jan: 0,
-    Feb: 1,
-    Mar: 2,
-    Apr: 3,
-    May: 4,
-    Jun: 5,
-    Jul: 6,
-    Aug: 7,
-    Sep: 8,
-    Oct: 9,
-    Nov: 10,
-    Dec: 11,
-  };
-
-  const cellMonthNum = monthAbbreviations[cellMonth];
-  const searchMonthNum = monthAbbreviations[searchMonth];
-
-  // Convert the year to a number
-  const cellYearNum = parseInt(cellYear);
-  const searchYearNum = parseInt(searchYear);
-
-  // Compare the date parts of the cellValue and search date
-  return (
-    cellDayNum === searchDayNum &&
-    cellMonthNum === searchMonthNum &&
-    cellYearNum === searchYearNum
-  );
+  // Perform a strict comparison of the full date string
+  return lowerCellValue === lowerSearchValue;
 }
-// PageB.js
-
-import { customDateFilter } from "./PageA"; // Adjust the path if needed
-
-// Your ag-Grid configuration
-const columnDefs = [
-  // Other column definitions...
-  {
-    headerName: "Date Column",
-    field: "dateField",
-    filter: "agDateColumnFilter", // This enables the built-in ag-Grid date filter
-    filterParams: {
-      // Use the imported custom date filter function
-      comparator: customDateFilter,
-    },
-  },
-];
-
-// ...rest of your ag-Grid configuration
