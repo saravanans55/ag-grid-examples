@@ -1,17 +1,13 @@
- onFilterTextBoxChanged() {
+  onFilterTextBoxChanged() {
     let txt = (document.getElementById('filter-text-box') as HTMLInputElement).value;
     if (this.gridApi != null) {
-      // Filter the rows based on the given search term
       const filteredRows = this.rowData.filter((row) => {
-        return (
-          row.date_0.toLowerCase().includes(txt.toLowerCase()) ||
-          row.date_1.toLowerCase().includes(txt.toLowerCase()) ||
-          row.date_2.toLowerCase().includes(txt.toLowerCase()) ||
-          row.date_3.toLowerCase().includes(txt.toLowerCase())
+        // Check for any column in the row that matches the filter term
+        return Object.values(row).some((value: string) =>
+          value.toLowerCase().includes(txt.toLowerCase())
         );
       });
 
-      // Update the grid with the filtered data
       this.gridApi.setRowData(filteredRows);
     }
   }
