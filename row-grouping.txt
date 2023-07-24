@@ -1,11 +1,17 @@
-// Assuming the date format in the column is "18 Jul 2023"
-function customDateFilter(dateToSearch, cellValue) {
-  // Convert the cellValue to lowercase for case-insensitive comparison
-  const lowerCellValue = cellValue.toLowerCase();
+ onFilterTextBoxChanged() {
+    let txt = (document.getElementById('filter-text-box') as HTMLInputElement).value;
+    if (this.gridApi != null) {
+      // Filter the rows based on the given search term
+      const filteredRows = this.rowData.filter((row) => {
+        return (
+          row.date_0.toLowerCase().includes(txt.toLowerCase()) ||
+          row.date_1.toLowerCase().includes(txt.toLowerCase()) ||
+          row.date_2.toLowerCase().includes(txt.toLowerCase()) ||
+          row.date_3.toLowerCase().includes(txt.toLowerCase())
+        );
+      });
 
-  // Convert the search query to lowercase for case-insensitive comparison
-  const lowerSearchValue = dateToSearch.toLowerCase();
-
-  // Perform a strict comparison of the full date string
-  return lowerCellValue === lowerSearchValue;
-}
+      // Update the grid with the filtered data
+      this.gridApi.setRowData(filteredRows);
+    }
+  }
