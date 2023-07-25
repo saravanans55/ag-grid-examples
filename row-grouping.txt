@@ -1,16 +1,7 @@
-defaultColDef = {
-    // Set suppressKeyboardEvent to allow tab navigation in editable mode
-    suppressKeyboardEvent: (params) => {
-      const { editing, event } = params;
-      const TAB_KEY = 9;
+const dateFieldsArray = [];
 
-      // Check if the cell is in editing mode and if the pressed key is the tab key
-      if (editing && event.keyCode === TAB_KEY) {
-        // Return false to allow the default tab behavior for navigation
-        return false;
-      }
-
-      // Return true to handle the event in other cases or if not in editing mode
-      return true;
-    },
-  };
+data.forEach((item) => {
+  item.children
+    .filter((child) => child.cellClass === "date")
+    .forEach((child) => dateFieldsArray.push(child.field));
+});
