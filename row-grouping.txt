@@ -1,7 +1,11 @@
-const dateFieldsArray = [];
-
 data.forEach((item) => {
-  item.children
-    .filter((child) => child.cellClass === "date")
-    .forEach((child) => dateFieldsArray.push(child.field));
+  if (item.cellClass === "date") {
+    dateFieldsArray.push(item.headerName);
+  }
+
+  if (item.children) {
+    item.children
+      .filter((child) => child.cellClass === "date")
+      .forEach((child) => dateFieldsArray.push(child.field));
+  }
 });
