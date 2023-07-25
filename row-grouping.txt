@@ -1,2 +1,16 @@
-  const datePattern = /^(0[1-9]|[1-2][0-9]|3[0-1])\/(0[1-9]|1[0-2])\/\d{4}$/;
-    this.isValidDate = datePattern.test(this.inputText);
+defaultColDef = {
+    // Set suppressKeyboardEvent to allow tab navigation in editable mode
+    suppressKeyboardEvent: (params) => {
+      const { editing, event } = params;
+      const TAB_KEY = 9;
+
+      // Check if the cell is in editing mode and if the pressed key is the tab key
+      if (editing && event.keyCode === TAB_KEY) {
+        // Return false to allow the default tab behavior for navigation
+        return false;
+      }
+
+      // Return true to handle the event in other cases or if not in editing mode
+      return true;
+    },
+  };
