@@ -1,6 +1,11 @@
-formattingNumber(value) {
-  if (value !== null) {
-    return String(Math.round(value)).replace(/\B(?=(\d{3})+(?!))/g, "");
+function convertToNumber(value: any): number | null {
+  // Use the Number() function to convert the value to a number
+  const numberValue = Number(value);
+
+  // Check if the conversion was successful and the result is a valid number
+  if (!isNaN(numberValue) && typeof numberValue === 'number') {
+    return numberValue;
+  } else {
+    return null;
   }
-  return null;
 }
