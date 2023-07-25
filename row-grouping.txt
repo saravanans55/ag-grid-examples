@@ -1,7 +1,6 @@
-function formatNumberWithCommas(value) {
-  // Convert the value to a string and remove any decimal places
-  const formattedValue = String(value).split('.')[0];
-
-  // Apply comma separation for thousands
-  return formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+formattingNumber(value) {
+  if (value !== null) {
+    return String(Math.round(value)).replace(/\B(?=(\d{3})+(?!))/g, "");
+  }
+  return null;
 }
