@@ -1,11 +1,7 @@
-data.forEach((item) => {
-  if (item.cellClass === "date") {
-    dateFieldsArray.push(item.headerName);
-  }
+function formatNumberWithCommas(value) {
+  // Convert the value to a string and remove any decimal places
+  const formattedValue = String(value).split('.')[0];
 
-  if (item.children) {
-    item.children
-      .filter((child) => child.cellClass === "date")
-      .forEach((child) => dateFieldsArray.push(child.field));
-  }
-});
+  // Apply comma separation for thousands
+  return formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
