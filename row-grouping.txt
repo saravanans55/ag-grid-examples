@@ -21,10 +21,17 @@ export class YourComponent implements AfterViewInit, OnDestroy {
     // Get the focused element
     const focusedElement = document.activeElement as HTMLElement;
 
-    // Check if the focused element is an input element inside the grid
-    if (focusedElement && focusedElement.classList.contains('ag-cell-edit-input')) {
-      this.focusedInputElement = focusedElement;
-      this.focusedInputElement.setAttribute('autocomplete', 'off');
+    // Check if the focused element is a number input or text input inside the grid
+    if (focusedElement) {
+      if (focusedElement.classList.contains('ag-cell-edit-input') && focusedElement.type === 'number') {
+        // Number input inside the grid
+        this.focusedInputElement = focusedElement;
+        this.focusedInputElement.setAttribute('autocomplete', 'off');
+      } else if (focusedElement.tagName === 'INPUT' && focusedElement.type === 'text') {
+        // Text input inside the grid (input[type="text"])
+        this.focusedInputElement = focusedElement;
+        this.focusedInputElement.setAttribute('autocomplete', 'off');
+      }
     }
   }
 }
