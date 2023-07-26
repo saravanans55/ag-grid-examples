@@ -1,42 +1,29 @@
-export class YourComponent implements AfterViewInit, OnDestroy {
+export class YourComponent implements OnDestroy {
   // ... (other code)
 
-  private focusedInputElement: HTMLInputElement; // Update the type to HTMLInputElement
+  editedRows: Set<number> = new Set<number>();
+  private debounceSubject = new Subject<any>();
+  private debounceSubscription: Subscription;
 
-  ngAfterViewInit(): void {
-    // Get the grid's native HTML element (grid container)
-    const gridNativeElement = this.gridContainer.nativeElement as HTMLElement;
-
-    // Add a focusin event listener to the grid container
-    gridNativeElement.addEventListener('focusin', this.onFocusIn);
+  constructor() {
+    // Subscribe to the debouncedSubject and process the events with debounceTime
+    this.debounceSubscription = this.debounceSubject.pipe(debounceTime(200)).subscribe((event) => {
+      this.onRowValueChanged(event);
+    });
   }
 
   ngOnDestroy(): void {
-    // Remove the event listener when the component is destroyed
-    const gridNativeElement = this.gridContainer.nativeElement as HTMLElement;
-    gridNativeElement.removeEventListener('focusin', this.onFocusIn);
+    // Unsubscribe from the debounceSubscription to avoid memory leaks
+    this.debounceSubscription.unsubscribe();
   }
 
-  onFocusIn(event: FocusEvent): void {
-    // Get the focused element
-    const focusedElement = document.activeElement as HTMLElement;
+  onRowValueChanged(event): void {
+    // Add the row index to the editedRows set
+    this.editedRows.add(event.node.rowIndex);
+  }
 
-    // Check if the focused element is an input element inside the grid
-    if (focusedElement) {
-      if (focusedElement.classList.contains('ag-cell-edit-input')) {
-        // Cast the focusedElement to HTMLInputElement to access the 'type' property
-        const inputElement = focusedElement as HTMLInputElement;
-
-        if (inputElement.type === 'number') {
-          // Number input inside the grid
-          this.focusedInputElement = inputElement;
-          this.focusedInputElement.setAttribute('autocomplete', 'off');
-        } else if (inputElement.type === 'text') {
-          // Text input inside the grid (input[type="text"])
-          this.focusedInputElement = inputElement;
-          this.focusedInputElement.setAttribute('autocomplete', 'off');
-        }
-      }
-    }
+  // Call this method instead of directly adding to editedRows set
+  debounceRowValueChanged(event): void {
+    this.debounceSubject.next(event);
   }
 }
