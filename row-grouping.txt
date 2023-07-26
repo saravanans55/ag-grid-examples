@@ -1,25 +1,30 @@
 export class YourComponent implements AfterViewInit, OnDestroy {
   // ... (other code)
 
+  private focusedInputElement: HTMLElement;
+
   ngAfterViewInit(): void {
     // Get the grid's native HTML element (grid container)
     const gridNativeElement = this.gridContainer.nativeElement as HTMLElement;
 
-    // Add an event listener to the grid container to prevent browser autocomplete
-    this.focusInListener = () => {
-      // Disable browser autocomplete for all input elements inside the grid container
-      const inputElements = gridNativeElement.querySelectorAll('.ag-cell-edit-input');
-      inputElements.forEach((input: HTMLElement) => {
-        input.setAttribute('autocomplete', 'off');
-      });
-    };
-
-    gridNativeElement.addEventListener('focusin', this.focusInListener);
+    // Add a focusin event listener to the grid container
+    gridNativeElement.addEventListener('focusin', this.onFocusIn);
   }
 
   ngOnDestroy(): void {
     // Remove the event listener when the component is destroyed
     const gridNativeElement = this.gridContainer.nativeElement as HTMLElement;
-    gridNativeElement.removeEventListener('focusin', this.focusInListener);
+    gridNativeElement.removeEventListener('focusin', this.onFocusIn);
+  }
+
+  onFocusIn(event: FocusEvent): void {
+    // Get the focused element
+    const focusedElement = document.activeElement as HTMLElement;
+
+    // Check if the focused element is an input element inside the grid
+    if (focusedElement && focusedElement.classList.contains('ag-cell-edit-input')) {
+      this.focusedInputElement = focusedElement;
+      this.focusedInputElement.setAttribute('autocomplete', 'off');
+    }
   }
 }
