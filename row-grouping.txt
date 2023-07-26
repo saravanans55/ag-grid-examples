@@ -1,11 +1,25 @@
-function convertToNumber(value: any): number | null {
-  // Use the Number() function to convert the value to a number
-  const numberValue = Number(value);
+export class YourComponent implements AfterViewInit, OnDestroy {
+  // ... (other code)
 
-  // Check if the conversion was successful and the result is a valid number
-  if (!isNaN(numberValue) && typeof numberValue === 'number') {
-    return numberValue;
-  } else {
-    return null;
+  ngAfterViewInit(): void {
+    // Get the grid's native HTML element (grid container)
+    const gridNativeElement = this.gridContainer.nativeElement as HTMLElement;
+
+    // Add an event listener to the grid container to prevent browser autocomplete
+    this.focusInListener = () => {
+      // Disable browser autocomplete for all input elements inside the grid container
+      const inputElements = gridNativeElement.querySelectorAll('.ag-cell-edit-input');
+      inputElements.forEach((input: HTMLElement) => {
+        input.setAttribute('autocomplete', 'off');
+      });
+    };
+
+    gridNativeElement.addEventListener('focusin', this.focusInListener);
+  }
+
+  ngOnDestroy(): void {
+    // Remove the event listener when the component is destroyed
+    const gridNativeElement = this.gridContainer.nativeElement as HTMLElement;
+    gridNativeElement.removeEventListener('focusin', this.focusInListener);
   }
 }
