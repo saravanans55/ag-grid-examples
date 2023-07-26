@@ -1,7 +1,7 @@
 export class YourComponent implements AfterViewInit, OnDestroy {
   // ... (other code)
 
-  private focusedInputElement: HTMLElement;
+  private focusedInputElement: HTMLInputElement; // Update the type to HTMLInputElement
 
   ngAfterViewInit(): void {
     // Get the grid's native HTML element (grid container)
@@ -21,16 +21,21 @@ export class YourComponent implements AfterViewInit, OnDestroy {
     // Get the focused element
     const focusedElement = document.activeElement as HTMLElement;
 
-    // Check if the focused element is a number input or text input inside the grid
+    // Check if the focused element is an input element inside the grid
     if (focusedElement) {
-      if (focusedElement.classList.contains('ag-cell-edit-input') && focusedElement.type === 'number') {
-        // Number input inside the grid
-        this.focusedInputElement = focusedElement;
-        this.focusedInputElement.setAttribute('autocomplete', 'off');
-      } else if (focusedElement.tagName === 'INPUT' && focusedElement.type === 'text') {
-        // Text input inside the grid (input[type="text"])
-        this.focusedInputElement = focusedElement;
-        this.focusedInputElement.setAttribute('autocomplete', 'off');
+      if (focusedElement.classList.contains('ag-cell-edit-input')) {
+        // Cast the focusedElement to HTMLInputElement to access the 'type' property
+        const inputElement = focusedElement as HTMLInputElement;
+
+        if (inputElement.type === 'number') {
+          // Number input inside the grid
+          this.focusedInputElement = inputElement;
+          this.focusedInputElement.setAttribute('autocomplete', 'off');
+        } else if (inputElement.type === 'text') {
+          // Text input inside the grid (input[type="text"])
+          this.focusedInputElement = inputElement;
+          this.focusedInputElement.setAttribute('autocomplete', 'off');
+        }
       }
     }
   }
