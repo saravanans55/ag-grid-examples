@@ -1,3 +1,4 @@
+// Assuming you have the object and the array of objects
 const mainObject = {
   id: 1,
   name: "John",
@@ -11,25 +12,13 @@ const arrayOfObjects = [
   // Add more objects to the array (total 10,000 records)
 ];
 
-// Convert the array to a Map for faster lookup
-const objectMap = new Map(arrayOfObjects.map((obj) => [obj.id, obj]));
-
-// Get the matching object from the Map
-const matchedObject = objectMap.get(mainObject.id);
+// Check if the mainObject matches any object in the array
+const matchedObject = arrayOfObjects.find(
+  (item) => JSON.stringify(item) === JSON.stringify(mainObject)
+);
 
 if (matchedObject) {
-  // Custom comparison function to check if fields are the same
-  const areFieldsEqual = (field) => mainObject[field] === matchedObject[field];
-
-  // Compare only essential fields (e.g., name and age)
-  const essentialFields = ["name", "age"];
-  const allFieldsAreSame = essentialFields.every(areFieldsEqual);
-
-  if (allFieldsAreSame) {
-    console.log("All essential fields are the same.");
-  } else {
-    console.log("Essential fields have changed.");
-  }
+  console.log("Main object matches an object in the array.");
 } else {
-  console.log("No matching object found in the array.");
+  console.log("Main object does not match any object in the array.");
 }
