@@ -1,24 +1,35 @@
-// Assuming you have the object and the array of objects
-const mainObject = {
+// Function to check if all fields and values are matched between two objects
+function areObjectsEqual(obj1: any, obj2: any): boolean {
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+
+  if (keys1.length !== keys2.length) {
+    return false;
+  }
+
+  return keys1.every((key) => obj1[key] === obj2[key]);
+}
+
+// Assuming you have two objects with the same field
+const object1 = {
   id: 1,
   name: "John",
   age: 30,
   // Add other fields as needed
 };
 
-const arrayOfObjects = [
-  { id: 2, name: "Alice", age: 25 /* Add other fields as needed */ },
-  { id: 1, name: "John", age: 30 /* Add other fields as needed */ },
-  // Add more objects to the array (total 10,000 records)
-];
+const object2 = {
+  id: 1,
+  name: "John",
+  age: 30,
+  // Add other fields as needed
+};
 
-// Check if the mainObject matches any object in the array
-const matchedObject = arrayOfObjects.find(
-  (item) => JSON.stringify(item) === JSON.stringify(mainObject)
-);
+// Check if all fields and values are matched between object1 and object2
+const fieldsAreMatched = areObjectsEqual(object1, object2);
 
-if (matchedObject) {
-  console.log("Main object matches an object in the array.");
+if (fieldsAreMatched) {
+  console.log("All fields and values are matched between the objects.");
 } else {
-  console.log("Main object does not match any object in the array.");
+  console.log("Fields and/or values are different between the objects.");
 }
