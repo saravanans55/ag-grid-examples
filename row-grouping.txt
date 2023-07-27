@@ -7,14 +7,36 @@ function areObjectsEqual(obj1: any, obj2: any): boolean {
     return false;
   }
 
-  return keys1.every((key) => obj1[key] === obj2[key]);
+  // Check if each key in obj1 has the same value in obj2
+  for (const key of keys1) {
+    const value1 = obj1[key];
+    const value2 = obj2[key];
+
+    if (typeof value1 === "object" && typeof value2 === "object") {
+      // Recursively compare nested objects
+      if (!areObjectsEqual(value1, value2)) {
+        return false;
+      }
+    } else {
+      // Compare non-object values
+      if (value1 !== value2) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
 
-// Assuming you have two objects with the same field
+// Assuming you have two objects with the same field, including a nested object
 const object1 = {
   id: 1,
   name: "John",
   age: 30,
+  address: {
+    city: "New York",
+    country: "USA",
+  },
   // Add other fields as needed
 };
 
@@ -22,6 +44,10 @@ const object2 = {
   id: 1,
   name: "John",
   age: 30,
+  address: {
+    city: "New York",
+    country: "USA",
+  },
   // Add other fields as needed
 };
 
