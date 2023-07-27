@@ -1,29 +1,35 @@
-export class YourComponent implements OnDestroy {
-  // ... (other code)
+const mainObject = {
+  id: 1,
+  name: "John",
+  age: 30,
+  // Add other fields as needed
+};
 
-  editedRows: Set<number> = new Set<number>();
-  private debounceSubject = new Subject<any>();
-  private debounceSubscription: Subscription;
+const arrayOfObjects = [
+  { id: 2, name: "Alice", age: 25 /* Add other fields as needed */ },
+  { id: 1, name: "John", age: 30 /* Add other fields as needed */ },
+  // Add more objects to the array (total 10,000 records)
+];
 
-  constructor() {
-    // Subscribe to the debouncedSubject and process the events with debounceTime
-    this.debounceSubscription = this.debounceSubject.pipe(debounceTime(200)).subscribe((event) => {
-      this.onRowValueChanged(event);
-    });
+// Convert the array to a Map for faster lookup
+const objectMap = new Map(arrayOfObjects.map((obj) => [obj.id, obj]));
+
+// Get the matching object from the Map
+const matchedObject = objectMap.get(mainObject.id);
+
+if (matchedObject) {
+  // Custom comparison function to check if fields are the same
+  const areFieldsEqual = (field) => mainObject[field] === matchedObject[field];
+
+  // Compare only essential fields (e.g., name and age)
+  const essentialFields = ["name", "age"];
+  const allFieldsAreSame = essentialFields.every(areFieldsEqual);
+
+  if (allFieldsAreSame) {
+    console.log("All essential fields are the same.");
+  } else {
+    console.log("Essential fields have changed.");
   }
-
-  ngOnDestroy(): void {
-    // Unsubscribe from the debounceSubscription to avoid memory leaks
-    this.debounceSubscription.unsubscribe();
-  }
-
-  onRowValueChanged(event): void {
-    // Add the row index to the editedRows set
-    this.editedRows.add(event.node.rowIndex);
-  }
-
-  // Call this method instead of directly adding to editedRows set
-  debounceRowValueChanged(event): void {
-    this.debounceSubject.next(event);
-  }
+} else {
+  console.log("No matching object found in the array.");
 }
