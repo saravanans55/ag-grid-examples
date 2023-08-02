@@ -1,61 +1,7 @@
-// Function to check if all fields and values are matched between two objects
-function areObjectsEqual(obj1: any, obj2: any): boolean {
-  const keys1 = Object.keys(obj1);
-  const keys2 = Object.keys(obj2);
-
-  if (keys1.length !== keys2.length) {
-    return false;
-  }
-
-  // Check if each key in obj1 has the same value in obj2
-  for (const key of keys1) {
-    const value1 = obj1[key];
-    const value2 = obj2[key];
-
-    if (typeof value1 === "object" && typeof value2 === "object") {
-      // Recursively compare nested objects
-      if (!areObjectsEqual(value1, value2)) {
-        return false;
-      }
-    } else {
-      // Compare non-object values
-      if (value1 !== value2) {
-        return false;
-      }
-    }
-  }
-
-  return true;
-}
-
-// Assuming you have two objects with the same field, including a nested object
-const object1 = {
-  id: 1,
-  name: "John",
-  age: 30,
-  address: {
-    city: "New York",
-    country: "USA",
-  },
-  // Add other fields as needed
-};
-
-const object2 = {
-  id: 1,
-  name: "John",
-  age: 30,
-  address: {
-    city: "New York",
-    country: "USA",
-  },
-  // Add other fields as needed
-};
-
-// Check if all fields and values are matched between object1 and object2
-const fieldsAreMatched = areObjectsEqual(object1, object2);
-
-if (fieldsAreMatched) {
-  console.log("All fields and values are matched between the objects.");
-} else {
-  console.log("Fields and/or values are different between the objects.");
-}
+const transformedList: TransformedType[] = originalList.map((ele) => {
+    return {
+        id: ele.cspMasterTypeId,
+        groupName: ele.masterTypeGroup,
+        name: ele.masterTypeName
+    };
+});
