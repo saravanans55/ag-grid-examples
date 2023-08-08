@@ -1,6 +1,9 @@
-// Custom sorting comparator function for month names
+// Custom sorting comparator function for full month names
 function monthComparator(valueA: any, valueB: any, nodeA: any, nodeB: any, isInverted: boolean): number {
-  const monthsOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const monthsOrder = [
+    "January", "February", "March", "April", "May", "June", "July",
+    "August", "September", "October", "November", "December"
+  ];
   const indexA = monthsOrder.indexOf(valueA);
   const indexB = monthsOrder.indexOf(valueB);
 
