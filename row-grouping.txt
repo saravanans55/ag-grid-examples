@@ -1,7 +1,0 @@
-const transformedList: TransformedType[] = originalList.map((ele) => {
-    return {
-        id: ele.cspMasterTypeId,
-        groupName: ele.masterTypeGroup,
-        name: ele.masterTypeName
-    };
-});
