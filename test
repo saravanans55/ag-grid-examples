@@ -1,0 +1,24 @@
+// Custom sorting comparator function for month names
+function monthComparator(valueA: any, valueB: any, nodeA: any, nodeB: any, isInverted: boolean): number {
+  const monthsOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const indexA = monthsOrder.indexOf(valueA);
+  const indexB = monthsOrder.indexOf(valueB);
+
+  if (indexA < indexB) {
+    return -1;
+  } else if (indexA > indexB) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+// Define your column definitions with the custom comparator
+columnDefs: [
+  // Other columns...
+  {
+    headerName: 'Month Column',
+    field: 'monthField', // Replace with your actual field name
+    comparator: monthComparator,
+  },
+],
