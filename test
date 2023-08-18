@@ -5,13 +5,25 @@ const rowData = [
       { riskIndustryTypeId: 301, field1: 'value3', field2: 'value4' },
       { riskIndustryTypeId: 302, field1: 'value5', field2: 'value6' },
     ],
+    fieldA: 'A1',
+    fieldB: 'B1',
+    // ... other fields
   },
   // ... other objects
 ];
 
-const transformedData = rowData.map(item => ({
-  ...item.riskList[0],
-  riskList: item.riskList.length > 0 ? [...item.riskList] : null,
-}));
+const transformedData = rowData.map(item => {
+  const riskItem = item.riskList.length > 0 ? item.riskList[0] : null;
+
+  return {
+    riskIndustryTypeId: riskItem?.riskIndustryTypeId || null,
+    field1: riskItem?.field1 || null,
+    field2: riskItem?.field2 || null,
+    riskList: item.riskList,
+    fieldA: item.fieldA,
+    fieldB: item.fieldB,
+    // ... other fields
+  };
+});
 
 console.log(transformedData);
