@@ -1,14 +1,17 @@
-function customStatusCountAggFunction(values, params) {
-  const dynamicValue = params.context.dynamicValue; // Fetch the dynamic value from the context
+const rowData = [
+  {
+    riskList: [
+      { riskIndustryTypeId: 300, field1: 'value1', field2: 'value2' },
+      { riskIndustryTypeId: 301, field1: 'value3', field2: 'value4' },
+      { riskIndustryTypeId: 302, field1: 'value5', field2: 'value6' },
+    ],
+  },
+  // ... other objects
+];
 
-  const validStatusValues = arr_1.map(item => item.cspMasterTypeId); // Get the list of valid cspMasterTypeIds
-  let count = 0;
+const transformedData = rowData.map(item => ({
+  ...item.riskList[0],
+  riskList: item.riskList.length > 0 ? [...item.riskList] : null,
+}));
 
-  values.forEach(value => {
-    if (validStatusValues.includes(value) && value === dynamicValue) {
-      count++;
-    }
-  });
-
-  return count;
-}
+console.log(transformedData);
