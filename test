@@ -1,18 +1,40 @@
-const updatedRowData = rowData.map(item => {
-  const newItem = { ...item }; // Create a copy of the existing object
-  
-  if (item.riskList && item.riskList.length > 0) {
-    const riskListItem = item.riskList[0];
-    newItem.riskIndustryTypeId = riskListItem.riskIndustryTypeId;
-    newItem.field1 = riskListItem.field1;
-    newItem.field2 = riskListItem.field2;
-    // ... add other fields from riskListItem
-  } else {
-    newItem.riskIndustryTypeId = null;
-    newItem.field1 = null;
-    newItem.field2 = null;
-    // ... set other fields to null or default values
+import { Component, ElementRef, Renderer2 } from '@angular/core';
+
+@Component({
+  selector: 'app-ag-grid',
+  template: `
+    <!-- Your ag-Grid setup here -->
+  `,
+})
+export class AgGridComponent {
+  constructor(private renderer: Renderer2) {}
+
+  ngAfterViewInit() {
+    // Find the sidebar elements and perform actions based on their state
+    const valuesSidebar = document.querySelector('[aria-label="Values"]');
+    const statusCountElement = document.querySelector('[aria-label="statusCount(Status)"]');
+    const cancelIcon = document.querySelector('.ag-icon-cancel');
+
+    if (valuesSidebar && statusCountElement) {
+      // The "Values" area has child elements
+      // Show "statusTotal" column
+      this.showStatusTotalColumn();
+    }
+
+    if (cancelIcon && cancelIcon.getAttribute('unselectable') === 'off') {
+      // The "unselectable" attribute is off on the cancel icon
+      // Hide "statusTotal" column
+      this.hideStatusTotalColumn();
+    }
   }
 
-  return newItem;
-});
+  private showStatusTotalColumn() {
+    // Perform actions to show "statusTotal" column
+    // For example, you can update the column visibility using ag-Grid's API
+  }
+
+  private hideStatusTotalColumn() {
+    // Perform actions to hide "statusTotal" column
+    // For example, you can update the column visibility using ag-Grid's API
+  }
+}
