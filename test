@@ -1,14 +1,30 @@
 function compareArrays(arr1, arr2, field) {
+  // Check if either array is null, undefined, or not an array
+  if (!Array.isArray(arr1) || !Array.isArray(arr2)) {
+    return false;
+  }
+
   if (arr1.length !== arr2.length) {
     return false; // Arrays have different lengths
   }
 
-  return arr1.every((item1, index) => item1[field] === arr2[index][field]);
+  return arr1.every((item1, index) => {
+    if (typeof item1 !== 'object' || typeof arr2[index] !== 'object') {
+      return false; // Items are not objects
+    }
+
+    const value1 = item1[field];
+    const value2 = arr2[index][field];
+
+    if (typeof value1 === 'undefined' || typeof value2 === 'undefined') {
+      return false; // Undefined values
+    }
+
+    if (Number.isNaN(value1) || Number.isNaN(value2)) {
+      return false; // NaN values
+    }
+
+    // Compare the values in the specified field
+    return value1 === value2;
+  });
 }
-
-let arr1 = [];
-
-let arr2 = [];
-
-let result = compareArrays(arr1, arr2, 'riskCountryTypeId');
-console.log(result);
