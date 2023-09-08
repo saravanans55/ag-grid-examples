@@ -1,40 +1,14 @@
-import { Component, ElementRef, Renderer2 } from '@angular/core';
-
-@Component({
-  selector: 'app-ag-grid',
-  template: `
-    <!-- Your ag-Grid setup here -->
-  `,
-})
-export class AgGridComponent {
-  constructor(private renderer: Renderer2) {}
-
-  ngAfterViewInit() {
-    // Find the sidebar elements and perform actions based on their state
-    const valuesSidebar = document.querySelector('[aria-label="Values"]');
-    const statusCountElement = document.querySelector('[aria-label="statusCount(Status)"]');
-    const cancelIcon = document.querySelector('.ag-icon-cancel');
-
-    if (valuesSidebar && statusCountElement) {
-      // The "Values" area has child elements
-      // Show "statusTotal" column
-      this.showStatusTotalColumn();
-    }
-
-    if (cancelIcon && cancelIcon.getAttribute('unselectable') === 'off') {
-      // The "unselectable" attribute is off on the cancel icon
-      // Hide "statusTotal" column
-      this.hideStatusTotalColumn();
-    }
+function compareArrays(arr1, arr2, field) {
+  if (arr1.length !== arr2.length) {
+    return false; // Arrays have different lengths
   }
 
-  private showStatusTotalColumn() {
-    // Perform actions to show "statusTotal" column
-    // For example, you can update the column visibility using ag-Grid's API
-  }
-
-  private hideStatusTotalColumn() {
-    // Perform actions to hide "statusTotal" column
-    // For example, you can update the column visibility using ag-Grid's API
-  }
+  return arr1.every((item1, index) => item1[field] === arr2[index][field]);
 }
+
+let arr1 = [];
+
+let arr2 = [];
+
+let result = compareArrays(arr1, arr2, 'riskCountryTypeId');
+console.log(result);
