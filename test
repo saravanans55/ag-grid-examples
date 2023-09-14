@@ -1,30 +1,54 @@
-function compareArrays(arr1, arr2, field) {
-  // Check if either array is null, undefined, or not an array
-  if (!Array.isArray(arr1) || !Array.isArray(arr2)) {
-    return false;
+import * as XLSX from 'xlsx';
+
+export class ExportComponent {
+  rowDetails = [
+    {
+      mark1: 90,
+      mark2: 100,
+      mark3: 70,
+    },
+    {
+      mark1: 90,
+      mark2: 100,
+      mark3: 70,
+    },
+    {
+      mark1: 90,
+      mark2: 100,
+      mark3: 70,
+    },
+  ];
+
+  columnDetails = [
+    {
+      fieldName: 'mark1',
+      columnTitle: 'Tamil',
+    },
+    {
+      fieldName: 'mark2',
+      columnTitle: 'English',
+    },
+    {
+      fieldName: 'mark3',
+      columnTitle: 'Maths',
+    },
+  ];
+
+  exportToExcel(): void {
+    // Map the data columns to custom titles
+    const dataWithCustomColumns = this.rowDetails.map((row) => {
+      const newRow = {};
+      for (const columnDetail of this.columnDetails) {
+        const fieldName = columnDetail.fieldName;
+        const columnTitle = columnDetail.columnTitle;
+        newRow[columnTitle] = row[fieldName];
+      }
+      return newRow;
+    });
+
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataWithCustomColumns);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'exported-data.xlsx');
   }
-
-  if (arr1.length !== arr2.length) {
-    return false; // Arrays have different lengths
-  }
-
-  return arr1.every((item1, index) => {
-    if (typeof item1 !== 'object' || typeof arr2[index] !== 'object') {
-      return false; // Items are not objects
-    }
-
-    const value1 = item1[field];
-    const value2 = arr2[index][field];
-
-    if (typeof value1 === 'undefined' || typeof value2 === 'undefined') {
-      return false; // Undefined values
-    }
-
-    if (Number.isNaN(value1) || Number.isNaN(value2)) {
-      return false; // NaN values
-    }
-
-    // Compare the values in the specified field
-    return value1 === value2;
-  });
 }
