@@ -48,6 +48,14 @@ export class ExportComponent {
 
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataWithCustomColumns);
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
+
+    // Apply bold style to column titles
+    const wsCols = [];
+    for (const columnDetail of this.columnDetails) {
+      wsCols.push({ wch: columnDetail.columnTitle.length * 2, s: { font: { bold: true } } });
+    }
+    ws['!cols'] = wsCols;
+
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'exported-data.xlsx');
   }
