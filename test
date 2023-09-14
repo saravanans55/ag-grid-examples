@@ -10,9 +10,24 @@ export class ExportComponent {
     // Add more rows if needed
   ];
 
+  commonColumnWidth = 100; // Set the common width in pixels
+
   exportToExcel(): void {
     const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.json_to_sheet(this.rowDetails);
+    const worksheet = XLSX.utils.json_to_sheet(this.rowDetails, { header: Object.keys(this.rowDetails[0]) });
+
+    // Set a common width for all columns
+    const columnWidths = Array(Object.keys(this.rowDetails[0]).length).fill({ wpx: this.commonColumnWidth });
+
+    worksheet['!cols'] = columnWidths;
+
+    // Make header cells bold
+    const headerRow = worksheet[XLSX.utils.encode_cell({ r: 0, c: 0 })]; // Get the first row (header row)
+    for (const cellAddress in headerRow) {
+      if (headerRow.hasOwnProperty(cellAddress)) {
+        headerRow[cellAddress].s = { font: { bold: true } };
+      }
+    }
 
     // Add the worksheet to the workbook
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
