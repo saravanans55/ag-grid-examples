@@ -1,11 +1,5 @@
-import { Component } from '@angular/core';
-import * as ExcelJS from 'exceljs';
+import * as XLSX from 'xlsx';
 
-@Component({
-  selector: 'app-export',
-  templateUrl: './export.component.html',
-  styleUrls: ['./export.component.css']
-})
 export class ExportComponent {
   rowDetails = [
     {
@@ -29,35 +23,43 @@ export class ExportComponent {
     {
       fieldName: 'mark1',
       columnTitle: 'Tamil',
-      minWidth: 10,
+      minWidth: 10, // Minimum width for the column (adjust as needed)
     },
     {
       fieldName: 'mark2',
       columnTitle: 'English',
-      minWidth: 10,
+      minWidth: 10, // Minimum width for the column (adjust as needed)
     },
     {
       fieldName: 'mark3',
       columnTitle: 'Maths',
-      minWidth: 10,
+      minWidth: 10, // Minimum width for the column (adjust as needed)
     },
   ];
 
   exportToExcel(): void {
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Sheet1');
-
-    // Define column headers with custom titles and formatting
-    worksheet.addRow(this.columnDetails.map(column => column.columnTitle));
-    const headerRow = worksheet.getRow(1);
-    headerRow.eachCell((cell, colNumber) => {
-      cell.font = { bold: true }; // Make the column titles bold
-      worksheet.getColumn(colNumber).width = columnDetails[colNumber - 1].minWidth; // Set minimum width
+    // Map the data columns to custom titles
+    const dataWithCustomColumns = this.rowDetails.map((row) => {
+      const newRow = {};
+      for (const columnDetail of this.columnDetails) {
+        const fieldName = columnDetail.fieldName;
+        const columnTitle = columnDetail.columnTitle;
+        newRow[columnTitle] = row[fieldName];
+      }
+      return newRow;
     });
 
-    // Add data to the worksheet
-    this.rowDetails.forEach(row => {
-      worksheet.addRow(this.columnDetails.map(column => row[column.fieldName]));
-    });
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataWithCustomColumns);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
 
-    // Create and save
+    // Apply bold style to column titles
+    const wsCols = [];
+    for (const columnDetail of this.columnDetails) {
+      wsCols.push({ wch: columnDetail.minWidth, s: { font: { bold: true } } });
+    }
+    ws['!cols'] = wsCols;
+
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'exported-data.xlsx');
+  }
+}
