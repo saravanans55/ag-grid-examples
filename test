@@ -1,67 +1,63 @@
-import { Component, OnInit } from '@angular/core';
-import * as xlsx from 'xlsx';
+import { Component } from '@angular/core';
+import * as ExcelJS from 'exceljs';
 
 @Component({
-  selector: 'app-excel-export',
-  templateUrl: './excel-export.component.html',
-  styleUrls: ['./excel-export.component.css']
+  selector: 'app-export',
+  templateUrl: './export.component.html',
+  styleUrls: ['./export.component.css']
 })
-export class ExcelExportComponent implements OnInit {
+export class ExportComponent {
+  rowDetails = [
+    {
+      mark1: 90,
+      mark2: 100,
+      mark3: 70,
+    },
+    {
+      mark1: 90,
+      mark2: 100,
+      mark3: 70,
+    },
+    {
+      mark1: 90,
+      mark2: 100,
+      mark3: 70,
+    },
+  ];
 
-  constructor() { }
+  columnDetails = [
+    {
+      fieldName: 'mark1',
+      columnTitle: 'Tamil',
+      minWidth: 10,
+    },
+    {
+      fieldName: 'mark2',
+      columnTitle: 'English',
+      minWidth: 10,
+    },
+    {
+      fieldName: 'mark3',
+      columnTitle: 'Maths',
+      minWidth: 10,
+    },
+  ];
 
-  ngOnInit() { }
+  exportToExcel(): void {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Sheet1');
 
-  exportExcel() {
-    // Create a new workbook.
-    const wb = xlsx.Workbook();
+    // Define column headers with custom titles and formatting
+    worksheet.addRow(this.columnDetails.map(column => column.columnTitle));
+    const headerRow = worksheet.getRow(1);
+    headerRow.eachCell((cell, colNumber) => {
+      cell.font = { bold: true }; // Make the column titles bold
+      worksheet.getColumn(colNumber).width = columnDetails[colNumber - 1].minWidth; // Set minimum width
+    });
 
-    // Create a new worksheet.
-    const ws = wb.create_sheet();
+    // Add data to the worksheet
+    this.rowDetails.forEach(row => {
+      worksheet.addRow(this.columnDetails.map(column => row[column.fieldName]));
+    });
 
-    // Add the column titles to the first row.
-    const columnTitles = ['Tamil', 'English', 'Maths'];
-    for (let i = 0; i < columnTitles.length; i++) {
-      ws.cell(row=1, column=i).value = columnTitles[i];
-    }
-
-    // Set the bold font style for the column titles.
-    for (let i = 0; i < columnTitles.length; i++) {
-      ws.cell(row=1, column=i).font.bold = true;
-    }
-
-    // Set the minimum width for each field.
-    for (let i = 0; i < columnTitles.length; i++) {
-      ws.column(i).min_width = 10;
-    }
-
-    // Iterate over the row data and add each row to the worksheet.
-    const rowData = [
-      {
-        mark1: 90,
-        mark2: 100,
-        mark3: 70
-      },
-      {
-        mark1: 90,
-        mark2: 100,
-        mark3: 70
-      },
-      {
-        mark1: 90,
-        mark2: 100,
-        mark3: 70
-      }
-    ];
-
-    for (let i = 0; i < rowData.length; i++) {
-      const row = ws.row(ws.max_row + 1);
-      for (let j = 0; j < columnTitles.length; j++) {
-        row.cell(column=j).value = rowData[i][columnTitles[j]];
-      }
-    }
-
-    // Save the workbook.
-    xlsx.writeFile(wb, 'result.xlsx');
-  }
-}
+    // Create and save
