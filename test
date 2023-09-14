@@ -1,65 +1,67 @@
-import * as XLSX from 'xlsx';
+import { Component, OnInit } from '@angular/core';
+import * as xlsx from 'xlsx';
 
-export class ExportComponent {
-  rowDetails = [
-    {
-      mark1: 90,
-      mark2: 100,
-      mark3: 70,
-    },
-    {
-      mark1: 90,
-      mark2: 100,
-      mark3: 70,
-    },
-    {
-      mark1: 90,
-      mark2: 100,
-      mark3: 70,
-    },
-  ];
+@Component({
+  selector: 'app-excel-export',
+  templateUrl: './excel-export.component.html',
+  styleUrls: ['./excel-export.component.css']
+})
+export class ExcelExportComponent implements OnInit {
 
-  columnDetails = [
-    {
-      fieldName: 'mark1',
-      columnTitle: 'Tamil',
-      minWidth: 10, // Minimum width for the column (adjust as needed)
-    },
-    {
-      fieldName: 'mark2',
-      columnTitle: 'English',
-      minWidth: 10, // Minimum width for the column (adjust as needed)
-    },
-    {
-      fieldName: 'mark3',
-      columnTitle: 'Maths',
-      minWidth: 10, // Minimum width for the column (adjust as needed)
-    },
-  ];
+  constructor() { }
 
-  exportToExcel(): void {
-    // Map the data columns to custom titles
-    const dataWithCustomColumns = this.rowDetails.map((row) => {
-      const newRow = {};
-      for (const columnDetail of this.columnDetails) {
-        const fieldName = columnDetail.fieldName;
-        const columnTitle = columnDetail.columnTitle;
-        newRow[columnTitle] = row[fieldName];
-      }
-      return newRow;
-    });
+  ngOnInit() { }
 
-    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataWithCustomColumns);
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+  exportExcel() {
+    // Create a new workbook.
+    const wb = xlsx.Workbook();
 
-    // Apply bold style to column titles
-    const wsCols = [];
-    for (const columnDetail of this.columnDetails) {
-      wsCols.push({ wch: columnDetail.minWidth, s: { font: { bold: true } } });
+    // Create a new worksheet.
+    const ws = wb.create_sheet();
+
+    // Add the column titles to the first row.
+    const columnTitles = ['Tamil', 'English', 'Maths'];
+    for (let i = 0; i < columnTitles.length; i++) {
+      ws.cell(row=1, column=i).value = columnTitles[i];
     }
-    ws['!cols'] = wsCols;
 
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    XLSX.writeFile(wb, 'exported-data.xlsx');
+    // Set the bold font style for the column titles.
+    for (let i = 0; i < columnTitles.length; i++) {
+      ws.cell(row=1, column=i).font.bold = true;
+    }
+
+    // Set the minimum width for each field.
+    for (let i = 0; i < columnTitles.length; i++) {
+      ws.column(i).min_width = 10;
+    }
+
+    // Iterate over the row data and add each row to the worksheet.
+    const rowData = [
+      {
+        mark1: 90,
+        mark2: 100,
+        mark3: 70
+      },
+      {
+        mark1: 90,
+        mark2: 100,
+        mark3: 70
+      },
+      {
+        mark1: 90,
+        mark2: 100,
+        mark3: 70
+      }
+    ];
+
+    for (let i = 0; i < rowData.length; i++) {
+      const row = ws.row(ws.max_row + 1);
+      for (let j = 0; j < columnTitles.length; j++) {
+        row.cell(column=j).value = rowData[i][columnTitles[j]];
+      }
+    }
+
+    // Save the workbook.
+    xlsx.writeFile(wb, 'result.xlsx');
   }
 }
