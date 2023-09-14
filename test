@@ -22,11 +22,11 @@ export class ExportComponent {
     worksheet['!cols'] = columnWidths;
 
     // Make header cells bold
-    const headerRow = worksheet[XLSX.utils.encode_cell({ r: 0, c: 0 })]; // Get the first row (header row)
-    for (const cellAddress in headerRow) {
-      if (headerRow.hasOwnProperty(cellAddress)) {
-        headerRow[cellAddress].s = { font: { bold: true } };
-      }
+    const headerRange = XLSX.utils.decode_range(worksheet['!ref']); // Get the range of the header row
+    for (let colIndex = headerRange.s.c; colIndex <= headerRange.e.c; colIndex++) {
+      const cellAddress = XLSX.utils.encode_cell({ r: headerRange.s.r, c: colIndex }); // Get cell address
+      const cell = worksheet[cellAddress]; // Get the cell
+      cell.s = { font: { bold: true } }; // Make the cell's font bold
     }
 
     // Add the worksheet to the workbook
