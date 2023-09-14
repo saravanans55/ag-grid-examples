@@ -3,63 +3,29 @@ import * as XLSX from 'xlsx';
 export class ExportComponent {
   rowDetails = [
     {
-      mark1: 90,
-      mark2: 100,
-      mark3: 70,
+      "Mark 1": 90,
+      "Mark 2": 100,
+      "Mark 3": 70,
     },
-    {
-      mark1: 90,
-      mark2: 100,
-      mark3: 70,
-    },
-    {
-      mark1: 90,
-      mark2: 100,
-      mark3: 70,
-    },
-  ];
-
-  columnDetails = [
-    {
-      fieldName: 'mark1',
-      columnTitle: 'Tamil',
-      minWidth: 10, // Minimum width for the column (adjust as needed)
-    },
-    {
-      fieldName: 'mark2',
-      columnTitle: 'English',
-      minWidth: 10, // Minimum width for the column (adjust as needed)
-    },
-    {
-      fieldName: 'mark3',
-      columnTitle: 'Maths',
-      minWidth: 10, // Minimum width for the column (adjust as needed)
-    },
+    // Add more rows if needed
   ];
 
   exportToExcel(): void {
-    // Map the data columns to custom titles
-    const dataWithCustomColumns = this.rowDetails.map((row) => {
-      const newRow = {};
-      for (const columnDetail of this.columnDetails) {
-        const fieldName = columnDetail.fieldName;
-        const columnTitle = columnDetail.columnTitle;
-        newRow[columnTitle] = row[fieldName];
-      }
-      return newRow;
-    });
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(this.rowDetails);
 
-    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataWithCustomColumns);
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    // Add the worksheet to the workbook
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 
-    // Apply bold style to column titles
-    const wsCols = [];
-    for (const columnDetail of this.columnDetails) {
-      wsCols.push({ wch: columnDetail.minWidth, s: { font: { bold: true } } });
-    }
-    ws['!cols'] = wsCols;
-
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    XLSX.writeFile(wb, 'exported-data.xlsx');
+    // Save the workbook
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const fileName = 'exported-data.xlsx';
+    
+    // Create a download link and trigger the download
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = fileName;
+    link.click();
   }
 }
