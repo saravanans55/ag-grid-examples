@@ -23,14 +23,17 @@ export class ExportComponent {
     {
       fieldName: 'mark1',
       columnTitle: 'Tamil',
+      minWidth: 10, // Minimum width for the column (adjust as needed)
     },
     {
       fieldName: 'mark2',
       columnTitle: 'English',
+      minWidth: 10, // Minimum width for the column (adjust as needed)
     },
     {
       fieldName: 'mark3',
       columnTitle: 'Maths',
+      minWidth: 10, // Minimum width for the column (adjust as needed)
     },
   ];
 
@@ -52,7 +55,7 @@ export class ExportComponent {
     // Apply bold style to column titles
     const wsCols = [];
     for (const columnDetail of this.columnDetails) {
-      wsCols.push({ wch: columnDetail.columnTitle.length * 2, s: { font: { bold: true } } });
+      wsCols.push({ wch: columnDetail.minWidth, s: { font: { bold: true } } });
     }
     ws['!cols'] = wsCols;
 
