@@ -29,22 +29,19 @@ export class ExportComponent {
 
     const columnNames = Object.keys(this.rowDetails[0]);
 
-    // Make header cells bold
-    worksheet.addRow(columnNames);
-    worksheet.getRow(1).font = { bold: true };
-
-    // Set a common width for all columns
+    // Make header cells bold and set a common width for all columns
     columnNames.forEach((columnName, columnIndex) => {
       worksheet.getColumn(columnName).width = this.commonColumnWidth;
+      worksheet.getCell(1, columnIndex + 1).value = columnName;
+      worksheet.getCell(1, columnIndex + 1).font = { bold: true };
     });
 
     // Add data
-    this.rowDetails.forEach(row => {
-      const rowValues = [];
-      columnNames.forEach(columnName => {
-        rowValues.push(row[columnName]);
+    this.rowDetails.forEach((row, rowIndex) => {
+      columnNames.forEach((columnName, columnIndex) => {
+        const cellValue = row[columnName];
+        worksheet.getCell(rowIndex + 2, columnIndex + 1).value = cellValue;
       });
-      worksheet.addRow(rowValues);
     });
 
     // Generate the Excel file
