@@ -29,13 +29,14 @@ export class ExportComponent {
 
     const columnNames = Object.keys(this.rowDetails[0]);
 
+    // Make header cells bold
+    worksheet.addRow(columnNames);
+    worksheet.getRow(1).font = { bold: true };
+
     // Set a common width for all columns
     columnNames.forEach((columnName, columnIndex) => {
-      worksheet.getColumn(columnIndex + 1).width = this.commonColumnWidth;
+      worksheet.getColumn(columnName).width = this.commonColumnWidth;
     });
-
-    // Make header cells bold
-    worksheet.getRow(1).font = { bold: true };
 
     // Add data
     this.rowDetails.forEach(row => {
