@@ -30,18 +30,20 @@ export class ExportComponent {
     const columnNames = Object.keys(this.rowDetails[0]);
 
     // Set a common width for all columns
-    columnNames.forEach(columnName => {
-      worksheet.getColumn(columnName).width = this.commonColumnWidth;
+    columnNames.forEach((columnName, columnIndex) => {
+      worksheet.getColumn(columnIndex + 1).width = this.commonColumnWidth;
     });
 
     // Make header cells bold
     worksheet.getRow(1).font = { bold: true };
 
     // Add data
-    this.rowDetails.forEach((row, rowIndex) => {
+    this.rowDetails.forEach(row => {
+      const rowValues = [];
       columnNames.forEach(columnName => {
-        worksheet.getCell(rowIndex + 2, columnName).value = row[columnName];
+        rowValues.push(row[columnName]);
       });
+      worksheet.addRow(rowValues);
     });
 
     // Generate the Excel file
