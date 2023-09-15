@@ -1,3 +1,88 @@
+import { Component } from '@angular/core';
+const XlsxPopulate = require('xlsx-populate');
+
+@Component({
+  selector: 'app-export',
+  templateUrl: './export.component.html',
+  styleUrls: ['./export.component.css']
+})
+export class ExportComponent {
+  rowDetails = [
+    {
+      "Mark 1": 90,
+      "Mark 2": 100,
+      "Mark 3": 70,
+    },
+    // Add more rows if needed
+  ];
+
+  commonColumnWidth = 100; // Set the common width in pixels
+
+  exportToExcel(): void {
+    if (this.rowDetails.length === 0) {
+      return; // No data to export
+    }
+
+    const columnNames = Object.keys(this.rowDetails[0]);
+
+    XlsxPopulate.fromBlankAsync()
+      .then(workbook => {
+        const sheet = workbook.sheet(0);
+
+        // Set a common width for all columns
+        columnNames.forEach((columnName, columnIndex) => {
+          sheet.column(columnIndex + 1).width(this.commonColumnWidth);
+        });
+
+        // Add data
+        columnNames.forEach((columnName, columnIndex) => {
+          sheet.cell(1, columnIndex + 1).value(columnName); // Set the header cell value
+        });
+
+        this.rowDetails.forEach((row, rowIndex) => {
+          columnNames.forEach((columnName, columnIndex) => {
+            const cellValue = row[columnName];
+            sheet.cell(rowIndex + 2, columnIndex + 1).value(cellValue); // Set the data cell value
+          });
+        });
+
+        // Make header cells bold
+        sheet.range(`A1:${String.fromCharCode(64 + columnNames.length)}1`).style({ bold: true });
+
+        // Generate the Excel file
+        return workbook.outputAsync();
+      })
+      .then(data => {
+        const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const fileName = 'exported-data.xlsx';
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = fileName;
+        link.click();
+      })
+      .catch(error => {
+        console.error('Error exporting to Excel:', error);
+      });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import * as XLSX from 'xlsx';
 
 export class ExportComponent {
