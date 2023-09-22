@@ -15,6 +15,23 @@ function customAggregator(params) {
 }
 
 
+function getNestedProperty(obj, propertyPath) {
+  const properties = propertyPath.split('.');
+
+  // Use a loop to handle both direct fields and nested object properties
+  let value = obj;
+  for (const property of properties) {
+    if (value && value.hasOwnProperty(property)) {
+      value = value[property];
+    } else {
+      return undefined;
+    }
+  }
+
+  return value;
+}
+
+
 // Configure ag-Grid column definitions
 const columnDefs = [
   {
