@@ -1,5 +1,9 @@
 // Define a custom aggregation function
 function customAggregator(params) {
+  if (!params.node || !params.node.childrenAfterFilter) {
+    return null; // Handle the case where there are no child nodes or undefined node
+  }
+
   // Get all the child nodes under the parent node
   const childNodes = params.node.childrenAfterFilter;
 
@@ -9,6 +13,7 @@ function customAggregator(params) {
   // If all values are the same, return the value; otherwise, return a placeholder value (e.g., "-")
   return allValuesSame ? childNodes[0].data[params.column.getId()] : "-";
 }
+
 
 // Configure ag-Grid column definitions
 const columnDefs = [
