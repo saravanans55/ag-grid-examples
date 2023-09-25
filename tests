@@ -61,3 +61,17 @@ const columnDefs = [
 const gridOptions = {
   // ...
 };
+
+
+1. Display identical child values within the primary column, excluding any differing child col values.
+
+2. Display the accurate opportunity count in the parent column:
+   - Aggregate identical sub fee types of opportunities into a single opportunity.
+   - Present this precise value at the parent level.
+   - Enable link navigation on the column of "Opportunity Name", applicable within row grouping.
+Show opp.count not the row count.
+
+3. On the Opp.name, provide direct link & when they click on the link it will navigate to opp.edit page.
+
+4. Conceal the "Export all" option and reveal the "Export" button.
+   Note: This functionality will become available once roles and access permissions are implemented.
