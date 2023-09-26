@@ -1,0 +1,50 @@
+// Import necessary modules and components
+import { Component } from '@angular/core';
+import { AgRendererComponent } from 'ag-grid-angular';
+
+@Component({
+  selector: 'app-custom-cell-renderer',
+  template: `
+    <div *ngIf="isParent; else childTemplate">
+      {{ parentValue }}
+    </div>
+    <ng-template #childTemplate>
+      {{ childValue }}
+    </ng-template>
+  `
+})
+export class CustomCellRendererComponent implements AgRendererComponent {
+  private params: any;
+  isParent: boolean = false;
+  parentValue: string = '';
+  childValue: string = '';
+
+  agInit(params: any): void {
+    this.params = params;
+    this.isParent = !params.node.group;
+    if (this.isParent) {
+      this.calculateValuesForParent();
+    } else {
+      this.childValue = params.value;
+    }
+  }
+
+  refresh(params: any): boolean {
+    return false;
+  }
+
+  private calculateValuesForParent() {
+    // Implement your logic to calculate and set parentValue
+    // Check child values within the group and merge identical values
+    const groupNode = this.params.node;
+    const childNodes = groupNode.childrenAfterFilter;
+    const firstChildValue = childNodes[0].data[this.params.column.colId];
+
+    if (childNodes.every(node => node.data[this.params.column.colId] === firstChildValue)) {
+      this.parentValue = firstChildValue;
+    } else {
+      // Different child values, show a placeholder or custom value
+      this.parentValue = '-';
+    }
+  }
+}
