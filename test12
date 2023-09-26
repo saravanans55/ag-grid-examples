@@ -1,50 +1,28 @@
-// Import necessary modules and components
-import { Component } from '@angular/core';
-import { AgRendererComponent } from 'ag-grid-angular';
+private calculateCellValue() {
+    if (this.params.node.group) {
+      // Parent row, get identical child values for this column
+      const childNodes = this.params.node.childrenAfterFilter;
+      const colId = this.params.column.colId;
 
-@Component({
-  selector: 'app-custom-cell-renderer',
-  template: `
-    <div *ngIf="isParent; else childTemplate">
-      {{ parentValue }}
-    </div>
-    <ng-template #childTemplate>
-      {{ childValue }}
-    </ng-template>
-  `
-})
-export class CustomCellRendererComponent implements AgRendererComponent {
-  private params: any;
-  isParent: boolean = false;
-  parentValue: string = '';
-  childValue: string = '';
+      // Find the first child node with a value for this column
+      const firstChildWithValue = childNodes.find(node => node.data[colId]);
 
-  agInit(params: any): void {
-    this.params = params;
-    this.isParent = !params.node.group;
-    if (this.isParent) {
-      this.calculateValuesForParent();
+      if (firstChildWithValue) {
+        // Use the value from the first child with a value for this column
+        this.cellValue = firstChildWithValue.data[colId];
+
+        // Set the identical value for all parent nodes within the group
+        childNodes.forEach(node => {
+          if (node.group) {
+            node.setDataValue(colId, this.cellValue);
+          }
+        });
+      } else {
+        // No child nodes with a value for this column, show a placeholder or custom value
+        this.cellValue = '-';
+      }
     } else {
-      this.childValue = params.value;
+      // Child row, get the value from the data
+      this.cellValue = this.params.value;
     }
   }
-
-  refresh(params: any): boolean {
-    return false;
-  }
-
-  private calculateValuesForParent() {
-    // Implement your logic to calculate and set parentValue
-    // Check child values within the group and merge identical values
-    const groupNode = this.params.node;
-    const childNodes = groupNode.childrenAfterFilter;
-    const firstChildValue = childNodes[0].data[this.params.column.colId];
-
-    if (childNodes.every(node => node.data[this.params.column.colId] === firstChildValue)) {
-      this.parentValue = firstChildValue;
-    } else {
-      // Different child values, show a placeholder or custom value
-      this.parentValue = '-';
-    }
-  }
-}
