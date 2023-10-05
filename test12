@@ -1,17 +1,7 @@
-const getNestedProperty = (obj, propertyPath) => {
-  const properties = propertyPath.split('.');
-
-  if (!obj || properties.length === 0) {
-    return undefined;
-  }
-
-  const currentProperty = properties.shift();
-
-  if (obj.hasOwnProperty(currentProperty)) {
-    return properties.length === 0
-      ? obj[currentProperty]
-      : getNestedProperty(obj[currentProperty], properties.join('.'));
-  } else {
-    return undefined;
-  }
+const getFilteredRowData = () => {
+  const filteredRowData = [];
+  gridOptions.api.forEachNodeAfterFilter(node => {
+    filteredRowData.push(node.data);
+  });
+  return filteredRowData;
 };
