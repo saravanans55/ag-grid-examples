@@ -1,28 +1,27 @@
-import * as moment from 'moment';
+function removeDuplicates(orFilter) {
+  const uniqueObjects = [];
+  const uniqueObjectMap = new Map();
 
-// Function to generate orFilters based on the current year and 5 years into the past
-function generateOrFilters() {
-  const currentYear = moment().year();
-  const yearsToGenerate = 5;
+  for (const filter of orFilter) {
+    const key = `${filter.propertyId}-${filter.terms.join('-')}-${filter.type}`;
 
-  const orFilters = [];
-
-  for (let i = currentYear; i > currentYear - yearsToGenerate; i--) {
-    const filter = {
-      propertyId: 'inception_date',
-      terms: [
-        moment(`${i}-01-01`).format('YYYY-MM-DD'),
-        moment(`${i}-12-31`).format('YYYY-MM-DD'),
-      ],
-      type: 'range',
-    };
-
-    orFilters.push(filter);
+    if (!uniqueObjectMap.has(key)) {
+      uniqueObjectMap.set(key, true);
+      uniqueObjects.push(filter);
+    }
   }
 
-  return orFilters;
+  return uniqueObjects;
 }
 
 // Example usage
-const dynamicOrFilters = generateOrFilters();
-console.log(dynamicOrFilters);
+const orFilter = [
+  { propertyId: "portfolio_l1", terms: ["sample1", "sadfasdf", "fsdafdsaf", "fdsafsdaf"], type: "exactMatch" },
+  { propertyId: "portfolio_l1", terms: ["sadfasdf", "fsdafdsaf", "fdsafsdaf"], type: "exactMatch" },
+  { propertyId: "portfolio_l2", terms: ["sample1", "sadfasdf", "fsdafdsaf", "fdsafsdaf"], type: "exactMatch" },
+  { propertyId: "portfolio_l3", terms: ["sample1", "sadfasdf", "fsdafdsaf", "fdsafsdaf"], type: "exactMatch" },
+  { propertyId: "portfolio_l1", terms: ["sample1", "sadfasdf", "fsdafdsaf", "fdsafsdaf"], type: "exactMatch" }
+];
+
+const uniqueOrFilter = removeDuplicates(orFilter);
+console.log(uniqueOrFilter);
