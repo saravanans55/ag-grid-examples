@@ -1,27 +1,38 @@
-function removeDuplicates(orFilter) {
-  const uniqueObjects = [];
-  const uniqueObjectMap = new Map();
+function removeDuplicatesInArrays(orFilter) {
+  const uniqueArrays = [];
 
-  for (const filter of orFilter) {
-    const key = `${filter.propertyId}-${filter.terms.join('-')}-${filter.type}`;
+  for (const subArray of orFilter) {
+    const uniqueObjects = [];
+    const uniqueObjectMap = new Map();
 
-    if (!uniqueObjectMap.has(key)) {
-      uniqueObjectMap.set(key, true);
-      uniqueObjects.push(filter);
+    for (const filter of subArray) {
+      const key = `${filter.propertyId}-${filter.terms.join('-')}-${filter.type}`;
+
+      if (!uniqueObjectMap.has(key)) {
+        uniqueObjectMap.set(key, true);
+        uniqueObjects.push(filter);
+      }
     }
+
+    uniqueArrays.push(uniqueObjects);
   }
 
-  return uniqueObjects;
+  return uniqueArrays;
 }
 
 // Example usage
 const orFilter = [
-  { propertyId: "portfolio_l1", terms: ["sample1", "sadfasdf", "fsdafdsaf", "fdsafsdaf"], type: "exactMatch" },
-  { propertyId: "portfolio_l1", terms: ["sadfasdf", "fsdafdsaf", "fdsafsdaf"], type: "exactMatch" },
-  { propertyId: "portfolio_l2", terms: ["sample1", "sadfasdf", "fsdafdsaf", "fdsafsdaf"], type: "exactMatch" },
-  { propertyId: "portfolio_l3", terms: ["sample1", "sadfasdf", "fsdafdsaf", "fdsafsdaf"], type: "exactMatch" },
-  { propertyId: "portfolio_l1", terms: ["sample1", "sadfasdf", "fsdafdsaf", "fdsafsdaf"], type: "exactMatch" }
+  [
+    { propertyId: "portfolio_l1", terms: ["sample1", "sadfasdf", "fsdafdsaf", "fdsafsdaf"], type: "exactMatch" },
+    { propertyId: "portfolio_l1", terms: ["sadfasdf", "fsdafdsaf", "fdsafsdaf"], type: "exactMatch" },
+    { propertyId: "portfolio_l2", terms: ["sample1", "sadfasdf", "fsdafdsaf", "fdsafsdaf"], type: "exactMatch" },
+    { propertyId: "portfolio_l3", terms: ["sample1", "sadfasdf", "fsdafdsaf", "fdsafsdaf"], type: "exactMatch" },
+    { propertyId: "portfolio_l1", terms: ["sample1", "sadfasdf", "fsdafdsaf", "fdsafsdaf"], type: "exactMatch" }
+  ],
+  [
+    { propertyId: "inception_date", terms: ["21-3-2001"], type: "range" }
+  ]
 ];
 
-const uniqueOrFilter = removeDuplicates(orFilter);
+const uniqueOrFilter = removeDuplicatesInArrays(orFilter);
 console.log(uniqueOrFilter);
