@@ -1,7 +1,28 @@
-const getFilteredRowData = () => {
-  const filteredRowData = [];
-  gridOptions.api.forEachNodeAfterFilter(node => {
-    filteredRowData.push(node.data);
-  });
-  return filteredRowData;
-};
+import * as moment from 'moment';
+
+// Function to generate orFilters based on the current year and 5 years into the past
+function generateOrFilters() {
+  const currentYear = moment().year();
+  const yearsToGenerate = 5;
+
+  const orFilters = [];
+
+  for (let i = currentYear; i > currentYear - yearsToGenerate; i--) {
+    const filter = {
+      propertyId: 'inception_date',
+      terms: [
+        moment(`${i}-01-01`).format('YYYY-MM-DD'),
+        moment(`${i}-12-31`).format('YYYY-MM-DD'),
+      ],
+      type: 'range',
+    };
+
+    orFilters.push(filter);
+  }
+
+  return orFilters;
+}
+
+// Example usage
+const dynamicOrFilters = generateOrFilters();
+console.log(dynamicOrFilters);
