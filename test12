@@ -1,38 +1,40 @@
-function removeDuplicatesInArrays(orFilter) {
-  const uniqueArrays = [];
-
-  for (const subArray of orFilter) {
-    const uniqueObjects = [];
-    const uniqueObjectMap = new Map();
-
-    for (const filter of subArray) {
-      const key = `${filter.propertyId}-${filter.terms.join('-')}-${filter.type}`;
-
-      if (!uniqueObjectMap.has(key)) {
-        uniqueObjectMap.set(key, true);
-        uniqueObjects.push(filter);
-      }
-    }
-
-    uniqueArrays.push(uniqueObjects);
-  }
-
-  return uniqueArrays;
-}
-
-// Example usage
-const orFilter = [
+let sample = [
   [
-    { propertyId: "portfolio_l1", terms: ["sample1", "sadfasdf", "fsdafdsaf", "fdsafsdaf"], type: "exactMatch" },
-    { propertyId: "portfolio_l1", terms: ["sadfasdf", "fsdafdsaf", "fdsafsdaf"], type: "exactMatch" },
-    { propertyId: "portfolio_l2", terms: ["sample1", "sadfasdf", "fsdafdsaf", "fdsafsdaf"], type: "exactMatch" },
-    { propertyId: "portfolio_l3", terms: ["sample1", "sadfasdf", "fsdafdsaf", "fdsafsdaf"], type: "exactMatch" },
-    { propertyId: "portfolio_l1", terms: ["sample1", "sadfasdf", "fsdafdsaf", "fdsafsdaf"], type: "exactMatch" }
-  ],
-  [
-    { propertyId: "inception_date", terms: ["21-3-2001"], type: "range" }
+    [
+      { propertyId: "broker_cluster", terms: ["Managed Global"], type: "exactMatch" },
+      { propertyId: "broker_account_id", terms: ["421", "440", "452", "462"], type: "exactMatch" }
+    ],
+    [
+      { propertyId: "broker_cluster", terms: ["Managed Global"], type: "exactMatch" },
+      { propertyId: "broker_account_id", terms: ["421", "440", "452", "462"], type: "exactMatch" }
+    ],
+    [
+      { propertyId: "broker_cluster", terms: ["Managed Global"], type: "exactMatch" },
+      { propertyId: "broker_account_id", terms: ["421", "440", "452", "462"], type: "exactMatch" }
+    ]
   ]
 ];
 
-const uniqueOrFilter = removeDuplicatesInArrays(orFilter);
-console.log(uniqueOrFilter);
+// Remove duplicates
+const uniqueSample = [];
+for (const outerArray of sample) {
+  const uniqueInnerArrays = [];
+
+  for (const innerArray of outerArray) {
+    const isDuplicate = uniqueInnerArrays.some(existingArray =>
+      existingArray.every((existingItem, index) =>
+        existingItem.propertyId === innerArray[index].propertyId &&
+        existingItem.type === innerArray[index].type &&
+        JSON.stringify(existingItem.terms) === JSON.stringify(innerArray[index].terms)
+      )
+    );
+
+    if (!isDuplicate) {
+      uniqueInnerArrays.push(innerArray);
+    }
+  }
+
+  uniqueSample.push(uniqueInnerArrays);
+}
+
+console.log(uniqueSample);
