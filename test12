@@ -1,52 +1,16 @@
-// app.component.ts
-
-import { Component, OnInit } from '@angular/core';
-import { DataService } from './data.service';
-
-@Component({
-  selector: 'app-root',
-  template: `
-    <h1>Posts</h1>
-    <ul>
-      <li *ngFor="let post of posts">{{ post.title }}</li>
-    </ul>
-  `
-})
-export class AppComponent implements OnInit {
-  posts: any[];
-
-  constructor(private dataService: DataService) {}
-
-  ngOnInit(): void {
-    this.dataService.getPosts().subscribe(posts => {
-      this.posts = posts;
-    });
-  }
-}
-
-
-
-
-
-
-
-// data.service.ts
-
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class DataService {
-  private apiUrl = 'http://localhost:3000';
-
-  constructor(private http: HttpClient) {}
-
-  getPosts(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/posts`);
-  }
-
-  // Add other methods as needed
+function formatLargeNumber(number: number): string {
+    // Convert number to string and check if it's in scientific notation
+    const numberString = number.toString();
+    if (numberString.includes('e')) {
+        const [mantissa, exponent] = numberString.split('e');
+        // Convert the mantissa and exponent to numbers
+        const parsedMantissa = parseFloat(mantissa);
+        const parsedExponent = parseInt(exponent, 10);
+        // Multiply mantissa by 10 raised to the power of exponent
+        const formattedNumber = parsedMantissa * Math.pow(10, parsedExponent);
+        // Return the formatted number as string
+        return formattedNumber.toString();
+    }
+    // If the number is not in scientific notation, return it as is
+    return numberString;
 }
