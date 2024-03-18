@@ -1,141 +1,32 @@
-import { Component, ViewChild } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import "ag-grid-enterprise";
-import { CustomStatsToolPanel } from "./custom-stats-tool-panel.component";
+import { Injectable } from '@angular/core';
 
-@Component({
-  selector: "my-app",
-  template: `
-    <div style="height: 100%; box-sizing: border-box;">
-      <ag-grid-angular
-        #agGrid
-        style="width: 100%; height: 100%;"
-        id="myGrid"
-        class="ag-theme-balham"
-        [columnDefs]="columnDefs"
-        [defaultColDef]="defaultColDef"
-        [autoGroupColumnDef]="autoGroupColumnDef"
-        [sideBar]="sideBar"
-        [frameworkComponents]="frameworkComponents"
-        [rowData]="rowData"
-        (gridReady)="onGridReady($event)"
-      ></ag-grid-angular>
-    </div>
-  `
+@Injectable({
+  providedIn: 'root'
 })
-export class AppComponent {
-  private gridApi;
-  private gridColumnApi;
-
-  private autoGroupColumnDef;
-  private columnDefs;
-  private defaultColDef;
-  private sideBar;
-  private frameworkComponents;
-  private rowData: [];
-
-  constructor(private http: HttpClient) {
-    this.columnDefs = [
-      {
-        field: "athlete",
-        width: 150,
-        filter: "agTextColumnFilter",
-        sortable: true
-      },
-      {
-        field: "age",
-        width: 90,
-        sortable: true
-      },
-      {
-        field: "country",
-        width: 120,
-        sortable: true
-      },
-      {
-        field: "year",
-        width: 90,
-        sortable: true
-      },
-      {
-        field: "date",
-        width: 110
-      },
-      {
-        field: "gold",
-        width: 100,
-        filter: false
-      },
-      {
-        field: "silver",
-        width: 100,
-        filter: false
-      },
-      {
-        field: "bronze",
-        width: 100,
-        filter: false
-      },
-      {
-        field: "total",
-        width: 100,
-        filter: false
-      }
-    ];
-    this.defaultColDef = { filter: true, sortable: true, enableRowGroup : true };
-    this.autoGroupColumnDef = {
-      comparator: function (valueA, valueB) {
-        if (valueA == null) return -1;
-        if (valueB == null) return 1;
-        if (!valueA.substring || !valueB.substring) return valueA - valueB;
-        if (valueA.length < 1 || valueB.length < 1) return valueA - valueB;
-        if (!isNaN(valueA) && !isNaN(valueB)) {
-          // values will come in as strings
-          return Number(valueA) - Number(valueB);
-        }
-        return valueA < valueB ? -1 : valueA > valueB ? 1 : 0;
-      }
+export class DataService {
+  inputData = {
+    "foods": {
+      "fruits": ["apple", "orange", "grapes"],
+      "vegetables": ["tomato", "brinjal", "potato"]
+    },
+    "vehicles": {
+      "cars": ["hatchpack", "suv", "mini suv"],
+      "bikes": ["scooter", "gear bike", "electric bike"]
     }
-    this.sideBar = {
-      toolPanels: [
-        {
-          id: "columns",
-          labelDefault: "Columns",
-          labelKey: "columns",
-          iconKey: "columns",
-          toolPanel: "agColumnsToolPanel"
-        },
-        {
-          id: "filters",
-          labelDefault: "Filters",
-          labelKey: "filters",
-          iconKey: "filter",
-          toolPanel: "agFiltersToolPanel"
-        },
-        {
-          id: "customStats",
-          labelDefault: "Custom Stats",
-          labelKey: "customStats",
-          iconKey: "custom-stats",
-          toolPanel: "customStatsToolPanel"
-        }
-      ],
-      defaultToolPanel: "customStats"
-    };
-    this.frameworkComponents = { customStatsToolPanel: CustomStatsToolPanel };
-  }
+  };
 
-  onGridReady(params) {
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
+  findCategory(input: string): string {
+    const category = Object.keys(this.inputData).find(category =>
+      Object.values(this.inputData[category]).some(subCategory => subCategory.includes(input))
+    );
 
-    this.http
-      .get("https://raw.githubusercontent.com/ag-grid/ag-grid/master/packages/ag-grid-docs/src/olympicWinners.json")
-      .subscribe(data => {
-        data[10].age = 200;
-        data[12].age = 2;
-        this.rowData = data;
-        
-      });
+    if (category) {
+      const subCategory = Object.keys(this.inputData[category]).find(subCategory =>
+        this.inputData[category][subCategory].includes(input)
+      );
+      return subCategory;
+    } else {
+      return "Category not found";
+    }
   }
 }
