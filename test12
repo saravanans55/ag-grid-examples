@@ -1,62 +1,9 @@
-function customSort(valueA: string | null | undefined, valueB: string | null | undefined): number {
-    // Handle null or undefined values
-    if (valueA == null && valueB == null) {
-        return 0; // Both values are null or undefined, consider them equal
-    } else if (valueA == null) {
-        return -1; // valueA is null or undefined, so it comes before valueB
-    } else if (valueB == null) {
-        return 1; // valueB is null or undefined, so it comes after valueA
-    }
-
-    // Split values into parts
-    const partsA = valueA.split('.');
-    const partsB = valueB.split('.');
-
-    // Iterate over each part to compare
-    for (let i = 0; i < Math.min(partsA.length, partsB.length); i++) {
-        const partA = partsA[i];
-        const partB = partsB[i];
-
-        // Try to parse parts as numbers
-        const numA = parseFloat(partA);
-        const numB = parseFloat(partB);
-
-        // Check if both parts can be converted to numbers
-        const areBothNumbers = !isNaN(numA) && !isNaN(numB);
-
-        if (areBothNumbers) {
-            // If both are numbers, compare them numerically
-            if (numA !== numB) {
-                return numA - numB;
-            }
-        } else {
-            // Otherwise, compare them as strings
-            const stringComparison = partA.localeCompare(partB);
-            if (stringComparison !== 0) {
-                return stringComparison;
-            }
+function validateInput(inputA: any, inputB: any): string[] {
+    const errors: string[] = [];
+    for (const [key, value] of Object.entries(inputA)) {
+        if (value === "required" && (inputB[key] === null || inputB[key] === undefined)) {
+            errors.push(`${key} must not be null.`);
         }
     }
-
-    // If all parts are equal so far, compare based on length
-    return partsA.length - partsB.length;
+    return errors;
 }
-
-// Test the custom sort function
-const values = [
-    "1500.10-01",
-    "P500.10-02",
-    "P15010.10-02",
-    "150P10P.10-02",
-    "110001001",
-    "1500.1.0-02",
-    "110001002",
-    "apple",
-    "orange",
-    "200",
-    "banana",
-    null,
-    undefined
-];
-
-console.log(values.sort(customSort));
