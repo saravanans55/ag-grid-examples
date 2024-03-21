@@ -1,9 +1,0 @@
-function validateInput(inputA: any, inputB: any): string[] {
-    const errors: string[] = [];
-    for (const [key, value] of Object.entries(inputA)) {
-        if (value === "required" && (inputB[key] === null || inputB[key] === undefined)) {
-            errors.push(`${key} must not be null.`);
-        }
-    }
-    return errors;
-}
