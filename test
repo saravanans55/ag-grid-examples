@@ -1,0 +1,66 @@
+import { Component, OnInit } from '@angular/core';
+import { GridApi, RowNode } from 'ag-grid-community';
+
+@Component({
+  selector: 'app-my-grid',
+  templateUrl: './my-grid.component.html',
+  styleUrls: ['./my-grid.component.css']
+})
+export class MyGridComponent implements OnInit {
+  gridApi: GridApi;
+  rowData: any[];
+  isOverlayVisible = false; // Track overlay visibility
+  hoveredRowData: any; // Store hovered row data
+
+  ngOnInit() {
+    // Initialize your grid data
+    this.rowData = [...];
+  }
+
+  onGridReady(params) {
+    this.gridApi = params.api;
+
+    this.gridApi.addEventListener('mouseover', (event) => {
+      const hoveredRowNode: RowNode = this.gridApi.getDisplayedRowAtIndex(event.rowIndex);
+
+      if (hoveredRowNode) {
+        this.isOverlayVisible = true;
+        this.hoveredRowData = hoveredRowNode.data; // Access row data
+      }
+    });
+
+    this.gridApi.addEventListener('mouseout', () => {
+      this.isOverlayVisible = false;
+      this.hoveredRowData = null; // Clear hovered data on mouseout
+    });
+  }
+}
+
+
+
+<div class="ag-row-hover" [class.ag-row-hover-overlay]="isOverlayVisible">
+  <div class="overlay-content">
+    <p *ngIf="hoveredRowData">{{ hoveredRowData | json }}</p>
+  </div>
+</div>
+
+
+
+
+.ag-row-hover-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  pointer-events: none;
+}
+
+.overlay-content {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 10px;
+}
