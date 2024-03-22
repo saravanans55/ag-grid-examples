@@ -1,65 +1,21 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { GridApi } from 'ag-grid-community';
+.center-container {
+  display: none; /* Initially hide the template */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  background-color: white;
+  border: 1px solid black;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
 
-@Component({
-  selector: 'app-my-grid',
-  templateUrl: './my-grid.component.html',
-  styleUrls: ['./my-grid.component.css']
-})
-export class MyGridComponent implements OnInit {
-  @ViewChild('agGrid') gridElement: ElementRef;
-  gridApi: GridApi;
-  rowData: any[];
+.template-content {
+  padding: 10px;
+}
 
-  ngOnInit() {
-    // ... (your grid initialization logic)
-    this.gridElement.nativeElement.addEventListener('mouseover', this.onRowHover.bind(this));
-  }
-
-  onRowHover(event) {
-    const target = event.target as HTMLElement;
-    const rowElement = target.closest('.ag-row'); // Find the closest row element
-
-    if (rowElement) {
-      const rowNode = this.gridApi.getRowNode(rowElement);
-      const rowData = rowNode?.data;
-
-      if (rowData) {
-        this.showOverlays(rowElement, rowData); // Show overlays for left and right corners
-      }
-    }
-
-    // Hide overlays on mouseout (optional)
-    this.gridElement.nativeElement.addEventListener('mouseout', () => {
-      this.hideOverlays();
-    });
-  }
-
-  showOverlays(rowElement: HTMLElement, rowData: any) {
-    // Create left and right overlay elements
-    const leftOverlay = document.createElement('div');
-    leftOverlay.classList.add('row-hover-overlay', 'left-overlay');
-    // Optionally, set content using rowData (if using a custom component, set the input)
-
-    const rightOverlay = document.createElement('div');
-    rightOverlay.classList.add('row-hover-overlay', 'right-overlay');
-    // Optionally, set content using rowData (if using a custom component, set the input)
-
-    // Position overlays near the corners of the row element
-    const rowRect = rowElement.getBoundingClientRect();
-    leftOverlay.style.top = rowRect.top + 'px';
-    leftOverlay.style.left = rowRect.left + 'px'; // Adjust for desired position
-
-    rightOverlay.style.top = rowRect.top + 'px';
-    rightOverlay.style.right = rowRect.right + 'px'; // Adjust for desired position
-
-    // Append overlays to the grid element (or a container)
-    this.gridElement.nativeElement.appendChild(leftOverlay);
-    this.gridElement.nativeElement.appendChild(rightOverlay);
-  }
-
-  hideOverlays() {
-    const overlays = document.querySelectorAll('.row-hover-overlay');
-    overlays.forEach(overlay => overlay.remove());
-  }
+.center-container ul {
+  list-style-type: disc;
+  padding-left: 20px;
 }
