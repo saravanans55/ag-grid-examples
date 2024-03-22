@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { GridApi, RowNode } from 'ag-grid-community';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { GridApi, GridReadyEvent } from 'ag-grid-community';
 
 @Component({
   selector: 'app-my-grid',
@@ -7,21 +7,24 @@ import { GridApi, RowNode } from 'ag-grid-community';
   styleUrls: ['./my-grid.component.css']
 })
 export class MyGridComponent implements OnInit {
+  @ViewChild('agGrid', { static: true }) agGrid; // Reference to the ag-Grid component
   gridApi: GridApi;
-  rowData: any[];
   isOverlayVisible = false; // Track overlay visibility
   hoveredRowData: any; // Store hovered row data
 
   ngOnInit() {
     // Initialize your grid data
-    this.rowData = [...];
+    // For example:
+    // this.rowData = [...];
   }
 
-  onGridReady(params) {
+  onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
+    const gridElement = this.agGrid.nativeElement;
 
-    this.gridApi.addEventListener('mouseover', (event) => {
-      const hoveredRowNode: RowNode = this.gridApi.getDisplayedRowAtIndex(event.rowIndex);
+    gridElement.addEventListener('mouseover', (event) => {
+      const rowIndex = this.getRowIndexFromEvent(event);
+      const hoveredRowNode = this.gridApi.getDisplayedRowAtIndex(rowIndex);
 
       if (hoveredRowNode) {
         this.isOverlayVisible = true;
@@ -29,38 +32,15 @@ export class MyGridComponent implements OnInit {
       }
     });
 
-    this.gridApi.addEventListener('mouseout', () => {
+    gridElement.addEventListener('mouseout', () => {
       this.isOverlayVisible = false;
       this.hoveredRowData = null; // Clear hovered data on mouseout
     });
   }
-}
 
-
-
-<div class="ag-row-hover" [class.ag-row-hover-overlay]="isOverlayVisible">
-  <div class="overlay-content">
-    <p *ngIf="hoveredRowData">{{ hoveredRowData | json }}</p>
-  </div>
-</div>
-
-
-
-
-.ag-row-hover-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
-  pointer-events: none;
-}
-
-.overlay-content {
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 10px;
+  private getRowIndexFromEvent(event: MouseEvent): number {
+    const target = event.target as HTMLElement;
+    const rowElement = target.closest('.ag-row');
+    return rowElement ? parseInt(rowElement.getAttribute('row-index'), 10) : -1;
+  }
 }
