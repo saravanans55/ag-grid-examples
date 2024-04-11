@@ -10,35 +10,15 @@ import { debounceTime, filter, map } from 'rxjs/operators';
 })
 export class YourComponent implements AfterViewInit {
   @ViewChild('agGrid', { static: true }) agGrid: AgGridAngular;
-  filterStates: { [key: string]: boolean } = {}; // Object to track filter states
 
   constructor() { }
 
   ngAfterViewInit() {
-    this.initializeFilterStates();
     this.setupFilterInputListener();
   }
 
-  initializeFilterStates() {
-    const toolPanelFilterComp = this.agGrid.api.getToolPanelInstance('filters');
-
-    // Get all columns
-    const columns = this.agGrid.columnApi.getAllColumns();
-
-    // Iterate over each column
-    columns.forEach(column => {
-      // Initialize filter state to false (collapsed)
-      this.filterStates[column.colId] = false;
-
-      // Add event listener to track filter expand/collapse
-      toolPanelFilterComp.addEventListener('groupExpanded', (event) => {
-        const groupId = event.column.getColId();
-        this.filterStates[groupId] = event.expanded;
-      });
-    });
-  }
-
   setupFilterInputListener() {
+    const toolPanelFilterComp = this.agGrid.api.getToolPanelInstance('filters');
     const filterInput = document.querySelector('.ag-filter-filter');
 
     if (filterInput) {
@@ -47,25 +27,32 @@ export class YourComponent implements AfterViewInit {
         map((event: any) => event.target.value.trim()),
         filter(searchValue => searchValue.length > 3)
       ).subscribe(searchValue => {
-        this.expandRelevantFilters(searchValue);
+        this.expandRelevantFilterGroups(toolPanelFilterComp, searchValue);
       });
     }
   }
 
-  expandRelevantFilters(searchValue: string) {
-    const toolPanelFilterComp = this.agGrid.api.getToolPanelInstance('filters');
+  expandRelevantFilterGroups(toolPanelFilterComp: any, searchValue: string) {
+    // Get all filter columns
+    const allFilterColumns = toolPanelFilterComp.getAllFilterColumns();
 
-    // Get all columns
-    const columns = this.agGrid.columnApi.getAllColumns();
+    // Iterate over each filter column
+    allFilterColumns.forEach(column => {
+      const groupLabel = toolPanelFilterComp.getGroupName(column.getColId());
 
-    // Iterate over each column
-    columns.forEach(column => {
-      // Check if the column header includes the search value
-      if (column.getColDef().headerName.toLowerCase().includes(searchValue.toLowerCase())) {
-        // Expand the filter if it's collapsed
-        if (!this.filterStates[column.colId]) {
-          toolPanelFilterComp.expandFilter(column.colId);
-        }
+      // Check if the group label includes the search value
+      if (groupLabel.toLowerCase().includes(searchValue.toLowerCase())) {
+        // Expand the filter group
+        toolPanelFilterComp.expandFilterGroup(column.getColId());
+
+        // Iterate over each child filter field
+        column.getChildren().forEach(child => {
+          // Check if the filter field header name includes the search value
+          if (child.getColDef().headerName.toLowerCase().includes(searchValue.toLowerCase())) {
+            // Expand the filter field
+            toolPanelFilterComp.expandFilter(child.getColId());
+          }
+        });
       }
     });
   }
