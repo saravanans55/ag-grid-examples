@@ -1,21 +1,72 @@
-.center-container {
-  display: none; /* Initially hide the template */
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 200px;
-  height: 200px;
-  background-color: white;
-  border: 1px solid black;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
+import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { AgGridAngular } from 'ag-grid-angular';
+import { fromEvent } from 'rxjs';
+import { debounceTime, filter, map } from 'rxjs/operators';
 
-.template-content {
-  padding: 10px;
-}
+@Component({
+  selector: 'app-your-component',
+  templateUrl: './your-component.component.html',
+  styleUrls: ['./your-component.component.css']
+})
+export class YourComponent implements AfterViewInit {
+  @ViewChild('agGrid', { static: true }) agGrid: AgGridAngular;
+  filterStates: { [key: string]: boolean } = {}; // Object to track filter states
 
-.center-container ul {
-  list-style-type: disc;
-  padding-left: 20px;
+  constructor() { }
+
+  ngAfterViewInit() {
+    this.initializeFilterStates();
+    this.setupFilterInputListener();
+  }
+
+  initializeFilterStates() {
+    const toolPanelFilterComp = this.agGrid.api.getToolPanelInstance('filters');
+
+    // Get all columns
+    const columns = this.agGrid.columnApi.getAllColumns();
+
+    // Iterate over each column
+    columns.forEach(column => {
+      // Initialize filter state to false (collapsed)
+      this.filterStates[column.colId] = false;
+
+      // Add event listener to track filter expand/collapse
+      toolPanelFilterComp.addEventListener('groupExpanded', (event) => {
+        const groupId = event.column.getColId();
+        this.filterStates[groupId] = event.expanded;
+      });
+    });
+  }
+
+  setupFilterInputListener() {
+    const filterInput = document.querySelector('.ag-filter-filter');
+
+    if (filterInput) {
+      fromEvent(filterInput, 'input').pipe(
+        debounceTime(2000),
+        map((event: any) => event.target.value.trim()),
+        filter(searchValue => searchValue.length > 3)
+      ).subscribe(searchValue => {
+        this.expandRelevantFilters(searchValue);
+      });
+    }
+  }
+
+  expandRelevantFilters(searchValue: string) {
+    const toolPanelFilterComp = this.agGrid.api.getToolPanelInstance('filters');
+
+    // Get all columns
+    const columns = this.agGrid.columnApi.getAllColumns();
+
+    // Iterate over each column
+    columns.forEach(column => {
+      // Check if the column header includes the search value
+      if (column.getColDef().headerName.toLowerCase().includes(searchValue.toLowerCase())) {
+        // Expand the filter if it's collapsed
+        if (!this.filterStates[column.colId]) {
+          toolPanelFilterComp.expandFilter(column.colId);
+        }
+      }
+    });
+  }
 }
