@@ -1,88 +1,23 @@
-import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-your-component',
-  templateUrl: './your-component.component.html',
-  styleUrls: ['./your-component.component.css']
+  selector: 'app-comment-dialog',
+  template: `
+    <h2 mat-dialog-title>Comment</h2>
+    <mat-dialog-content>
+      <mat-form-field>
+        <textarea matInput [(ngModel)]="data.comment" rows="5" placeholder="Enter comment"></textarea>
+      </mat-form-field>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button mat-button [mat-dialog-close]="'close'">Close</button>
+    </mat-dialog-actions>
+  `
 })
-export class YourComponent implements AfterViewInit {
-  @ViewChild('agGrid', { static: true }) agGrid: AgGridAngular;
-  @ViewChild('filterInput', { static: true }) filterInput: ElementRef<HTMLInputElement>;
-
-  constructor(private dialog: MatDialog) { }
-
-  ngAfterViewInit() {
-    this.setupFilterInputListener();
-  }
-
-  setupFilterInputListener() {
-    const toolPanelFilterComp = this.agGrid.api.getToolPanelInstance('filters');
-    const filterInput = this.filterInput.nativeElement;
-
-    if (filterInput) {
-      fromEvent(filterInput, 'input').pipe(
-        debounceTime(2000),
-        map((event: any) => event.target.value.trim()),
-        filter(searchValue => searchValue.length > 0) // Only proceed if searchValue is not empty
-      ).subscribe(searchValue => {
-        this.expandRelevantFilterGroups(toolPanelFilterComp, searchValue);
-        filterInput.focus(); // Reset focus to the input field after search operation
-      });
-    }
-  }
-
-  expandRelevantFilterGroups(toolPanelFilterComp: any, searchValue: string) {
-    // Get all filter columns
-    const filterColumns = this.agGrid.api.getColumnDefs();
-
-    // Iterate over each filter column
-    filterColumns.forEach(column => {
-      // Check if the group label or any child filter field header name includes the search value
-      if (column.headerName.toLowerCase().includes(searchValue.toLowerCase())) {
-        // Expand the filter group
-        toolPanelFilterComp.expandFilterGroup(column.colId);
-      }
-
-      // Iterate over each child filter field
-      column.children.forEach(child => {
-        // Check if the filter field header name includes the search value
-        if (child.headerName.toLowerCase().includes(searchValue.toLowerCase())) {
-          // Expand the filter group
-          toolPanelFilterComp.expandFilterGroup(column.colId);
-          // Expand the filter field
-          toolPanelFilterComp.expandFilter(child.colId);
-        }
-      });
-    });
-  }
-
-  openDialog(comment: string): void {
-    const dialogRef = this.dialog.open(CommentDialogComponent, {
-      width: '250px',
-      data: { comment }
-    });
-  }
-
-  // Inner class for dialog component
-  @Component({
-    selector: 'app-comment-dialog',
-    template: `
-      <h2 mat-dialog-title>Comment</h2>
-      <mat-dialog-content>
-        <mat-form-field>
-          <textarea matInput [(ngModel)]="data.comment" rows="5" placeholder="Enter comment"></textarea>
-        </mat-form-field>
-      </mat-dialog-content>
-      <mat-dialog-actions>
-        <button mat-button [mat-dialog-close]="'close'">Close</button>
-      </mat-dialog-actions>
-    `
-  })
-  export class CommentDialogComponent {
-    constructor(
-      public dialogRef: MatDialogRef<CommentDialogComponent>,
-      @Inject(MAT_DIALOG_DATA) public data: any
-    ) { }
-  }
+export class CommentDialogComponent {
+  constructor(
+    public dialogRef: MatDialogRef<CommentDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) { }
 }
