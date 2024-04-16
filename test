@@ -1,23 +1,19 @@
-import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+allowNumbersOnly(event: KeyboardEvent, allowNegative: boolean = false): void {
+  // Get the key code of the pressed key
+  const keyCode = event.keyCode || event.which;
 
-@Component({
-  selector: 'app-comment-dialog',
-  template: `
-    <h2 mat-dialog-title>Comment</h2>
-    <mat-dialog-content>
-      <mat-form-field>
-        <textarea matInput [(ngModel)]="data.comment" rows="5" placeholder="Enter comment"></textarea>
-      </mat-form-field>
-    </mat-dialog-content>
-    <mat-dialog-actions>
-      <button mat-button [mat-dialog-close]="'close'">Close</button>
-    </mat-dialog-actions>
-  `
-})
-export class CommentDialogComponent {
-  constructor(
-    public dialogRef: MatDialogRef<CommentDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) { }
+  // Get the current value of the input field
+  const inputValue = (event.target as HTMLInputElement).value;
+
+  // Check if negative numbers are allowed and if the negative sign (-) is the first character
+  const isFirstCharacterNegative = allowNegative && inputValue.length === 0 && keyCode === 45;
+
+  // Allow numbers (0-9) and control keys, and negative sign (-) if it is the first character and negative numbers are allowed
+  if (
+    !(keyCode >= 48 && keyCode <= 57) && // Check for numbers 0-9
+    !isFirstCharacterNegative && // Check if the negative sign is the first character
+    ![8, 9, 13, 27, 37, 39].includes(keyCode) // Allow control keys
+  ) {
+    event.preventDefault();
+  }
 }
