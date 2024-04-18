@@ -1,19 +1,11 @@
-allowNumbersOnly(event: KeyboardEvent, allowNegative: boolean = false): void {
-  // Get the key code of the pressed key
-  const keyCode = event.keyCode || event.which;
+const inputDate = new Date('2024-04-17'); // Example date
 
-  // Get the current value of the input field
-  const inputValue = (event.target as HTMLInputElement).value;
+// Get the current date
+const currentDate = new Date();
 
-  // Check if negative numbers are allowed and if the negative sign (-) is the first character
-  const isFirstCharacterNegative = allowNegative && inputValue.length === 0 && keyCode === 45;
-
-  // Allow numbers (0-9) and control keys, and negative sign (-) if it is the first character and negative numbers are allowed
-  if (
-    !(keyCode >= 48 && keyCode <= 57) && // Check for numbers 0-9
-    !isFirstCharacterNegative && // Check if the negative sign is the first character
-    ![8, 9, 13, 27, 37, 39].includes(keyCode) // Allow control keys
-  ) {
-    event.preventDefault();
-  }
+// Check if the input date is not earlier than the current date and not a future date
+if (inputDate >= currentDate && inputDate <= new Date()) {
+    console.log("The input date is valid.");
+} else {
+    console.log("The input date must not be earlier than the current date or a future date.");
 }
