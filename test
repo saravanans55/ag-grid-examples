@@ -1,13 +1,19 @@
-const columnDefs = [
-  {
-    field: 'numericColumn',
-    filter: 'agNumberColumnFilter',
-    filterParams: {
-      numberParser: text => {
-        // Custom numberParser to restrict to 4 digits
-        const parsedValue = parseFloat(text.replace(/[^0-9]/g, '')); // Remove non-numeric characters
-        return parsedValue > 9999 ? 9999 : parsedValue; // Limit to 4 digits
-      },
-    },
-  },
-];
+numberParser: text => {
+  // Remove non-numeric characters and leading zeros
+  const cleanedText = text.replace(/[^0-9]/g, '').replace(/^0+/, '');
+
+  // If the cleaned text is empty or starts with '-', return 0
+  if (cleanedText === '' || cleanedText === '-') {
+    return 0;
+  }
+
+  // Parse the cleaned text into a number
+  let parsedValue = parseFloat(cleanedText);
+
+  // Limit the parsed value to 4 digits
+  if (parsedValue > 9999) {
+    parsedValue = 9999;
+  }
+
+  return parsedValue;
+}
