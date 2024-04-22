@@ -1,11 +1,20 @@
-columnDefs = [
-  // Other column definitions
-  {
-    field: 'yourNumberField',
-    filter: 'agNumberColumnFilter',
-    filterParams: {
-      allowedCharPattern: /^(?:\d{1,3}|(?!9999)\d{4})$/, // Allow 1 to 3 digits or 4 digits (not 9999)
-    },
-  },
-  // Other column definitions
-];
+import { Component } from '@angular/core';
+import { AllModules } from '@ag-grid-enterprise/all-modules';
+
+@Component({
+  selector: 'app-grid',
+  templateUrl: './grid.component.html',
+  styleUrls: ['./grid.component.css']
+})
+export class GridComponent {
+  modules = AllModules;
+  columnDefs = [
+    { 
+      field: 'year', 
+      filter: 'agNumberColumnFilter', 
+      filterParams: { 
+        allowedCharPattern: '(?!^\\d{5,})\\d{0,4}' // Pattern to allow up to 4 digits and disallow numbers greater than 9999
+      } 
+    }
+  ];
+}
