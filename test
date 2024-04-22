@@ -1,11 +1,13 @@
-const inputDate = new Date('2024-04-17'); // Example date
-
-// Get the current date
-const currentDate = new Date();
-
-// Check if the input date is not earlier than the current date and not a future date
-if (inputDate >= currentDate && inputDate <= new Date()) {
-    console.log("The input date is valid.");
-} else {
-    console.log("The input date must not be earlier than the current date or a future date.");
-}
+const columnDefs = [
+  {
+    field: 'numericColumn',
+    filter: 'agNumberColumnFilter',
+    filterParams: {
+      numberParser: text => {
+        // Custom numberParser to restrict to 4 digits
+        const parsedValue = parseFloat(text.replace(/[^0-9]/g, '')); // Remove non-numeric characters
+        return parsedValue > 9999 ? 9999 : parsedValue; // Limit to 4 digits
+      },
+    },
+  },
+];
