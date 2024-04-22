@@ -1,19 +1,48 @@
-numberParser: text => {
-  // Remove non-numeric characters and leading zeros
-  const cleanedText = text.replace(/[^0-9]/g, '').replace(/^0+/, '');
+import { Component } from '@angular/core';
+import { AgFilterComponent } from '@ag-grid-community/angular';
 
-  // If the cleaned text is empty or starts with '-', return 0
-  if (cleanedText === '' || cleanedText === '-') {
-    return 0;
+@Component({
+  selector: 'app-year-filter',
+  template: `
+    <input
+      type="number"
+      class="ag-filter-filter"
+      [(ngModel)]="year"
+      (ngModelChange)="onChange()"
+      placeholder="Year..."
+      min="0"
+    />
+  `,
+})
+export class YearFilterComponent implements AgFilterComponent {
+  private params: any;
+  year: number | null = null;
+
+  agInit(params: any): void {
+    this.params = params;
   }
 
-  // Parse the cleaned text into a number
-  let parsedValue = parseFloat(cleanedText);
-
-  // Limit the parsed value to 4 digits
-  if (parsedValue > 9999) {
-    parsedValue = 9999;
+  onChange(): void {
+    if (this.year !== null) {
+      this.params.filterChangedCallback();
+    }
   }
 
-  return parsedValue;
+  isFilterActive(): boolean {
+    return this.year !== null;
+  }
+
+  doesFilterPass(params: any): boolean {
+    return this.year === null || params.data.year === this.year;
+  }
+
+  getModel(): any {
+    return { year: this.year };
+  }
+
+  setModel(model: any): void {
+    this.year = model ? model.year : null;
+  }
+
+  ngOnDestroy(): void {}
 }
