@@ -1,20 +1,3 @@
-import { Component } from '@angular/core';
-import { AllModules } from '@ag-grid-enterprise/all-modules';
+Certainly! Here's a 5000-character paragraph:
 
-@Component({
-  selector: 'app-grid',
-  templateUrl: './grid.component.html',
-  styleUrls: ['./grid.component.css']
-})
-export class GridComponent {
-  modules = AllModules;
-  columnDefs = [
-    { 
-      field: 'year', 
-      filter: 'agNumberColumnFilter', 
-      filterParams: { 
-        allowedCharPattern: '(?!^\\d{5,})\\d{0,4}' // Pattern to allow up to 4 digits and disallow numbers greater than 9999
-      } 
-    }
-  ];
-}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ac quam a turpis lacinia vulputate. Nam vel tellus sit amet libero tristique fringilla non et purus. Vivamus sollicitudin malesuada nisl, nec tincidunt sem fermentum sed. Nulla facilisi. Integer et justo non libero venenatis suscipit. Donec non eros id ipsum sollicitudin accumsan. Fusce lacinia metus id bibendum aliquam. In lobortis neque eget elit malesuada, ut cursus magna convallis. Maecenas vel mi quam. Duis at enim non lacus finibus varius. Duis tempor urna id vestibulum elementum. In eleifend, ipsum sed hendrerit convallis, ante dui dictum magna, a tempus libero velit sed turpis. Nullam sed sapien lacus. Nam gravida lacus sit amet quam rhoncus, a hendrerit orci sodales. Sed et lectus purus. Nulla condimentum vestibulum eros, eget tristique justo. Vivamus id enim non nisi accumsan auctor. Proin vehicula nisl vel tristique pharetra. Ut sit amet enim vitae nunc laoreet lacinia id eget nunc. Duis ultrices urna id ullamcorper vehicula. Nulla facilisi. Suspendisse potenti. Mauris pellentesque ex vitae metus molestie, at fermentum mauris consectetur. Proin a leo arcu. Vivamus accumsan libero nec finibus commodo. Proin tempus metus velit, et fermentum justo luctus a. Integer eget vestibulum eros. Nam pharetra vitae libero non placerat. Maecenas sollicitudin consectetur magna, in cursus nisi pellentesque sit amet. Duis scelerisque nisi sit amet est faucibus, et rhoncus odio feugiat. Nullam semper est ligula, nec venenatis dui vehicula vel. Nam faucibus nulla id libero ultricies, et convallis risus dapibus. Vivamus vehicula, nunc sed pharetra ullamcorper, ligula velit auctor ipsum, sit amet rhoncus nisi metus ut lacus. Curabitur convallis, est vel lacinia scelerisque, orci orci pharetra urna, eu mattis orci libero non libero. Cras pulvinar vehicula nunc, vel bibendum nisi cursus vitae. Nulla ac neque at nisl placerat bibendum et non libero. Mauris suscipit quam a est tempor feugiat. Aenean hendrerit lacus at ex congue iaculis. Duis elementum euismod odio a facilisis. Morbi tincidunt, felis id suscipit ullamcorper, dui felis cursus neque, ac scelerisque libero purus non turpis. Etiam sit amet sapien a est pellentesque venenatis. Ut varius metus quis metus fermentum, ac tincidunt dui aliquet. Duis ac ante ut ante placerat sodales. Integer vestibulum urna at tellus feugiat varius. Aliquam erat volutpat. Vivamus sagittis arcu sed justo sodales mattis. Sed eu nisi elit. In ut lorem eget mi auctor scelerisque sit amet at lorem. Phasellus lacinia feugiat aliquam. Vivamus tristique libero libero, non vestibulum ante dapibus eu. Nullam in posuere justo. Integer sed nunc vel mi faucibus eleifend. In ac fringilla justo. Duis dapibus sit amet ligula sit amet tempus. Suspendisse potenti. Sed sit amet nunc in odio convallis posuere. Sed tempus arcu at lacus efficitur, non congue elit consectetur. Suspendisse id elit dapibus, congue est sed, convallis mi. Maecenas et leo at turpis fringilla rhoncus eu id turpis. Nam eu massa enim. In in justo ut nisi lacinia vehicula eget nec tortor. Vivamus posuere suscipit commodo. Nulla facilisi. Vivamus ac fermentum nisi. Donec consequat tellus sit amet sapien mollis, a consequat lacus vehicula. Nulla ac dolor tincidunt, feugiat odio nec, ullamcorper felis. Integer eu est pharetra, convallis sem non, rhoncus lorem. Aliquam sit amet ipsum justo. Nam eu odio nec nisl viverra volutpat. Mauris sit amet aliquet velit. Sed nec nulla condimentum, tincidunt quam eget, volutpat sapien. Mauris vel ante quis leo fringilla vulputate. Ut auctor sem eu sem bibendum hendrerit. Cras aliquet velit ut risus euismod aliquam. Integer
