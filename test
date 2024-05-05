@@ -1,18 +1,1 @@
 
-1] Email Tagging -> Don't grey the 'Emails' tab leave it.
-2] Email Tagging -> Remove whole page blocking loader for Email Tagging grid, its happening only inside the tab grid. - Ask Jagans help
-3] Email Tagging -> Don't show save button.
-4] Email Tagging -> Don't show emails tab for create opp & policy records.
-5] Email Tagging -> check text -> "no rows in the grid", use what already used in the existing grids.
-6] Details -> Next Steps -> Don't throw any errors, remove it.
-7] Comments -> Show character count usage under the comment text area.
-
-
-Issues Todo :-
------------
-1] UAT Issues : 
-	- Must show 1 decimal for all three rol, roc, wap deviation  0.0 %, 
-	- Show (%) in brackets, 
-Remove decimal for ECM Walk away price (in USD).
-
-2] ROC not working properly pls cross check iwth
