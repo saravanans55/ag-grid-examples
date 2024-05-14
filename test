@@ -1,1 +1,78 @@
 
+To render an Angular DevExtreme dxPopover within an Angular ag-Grid cell, you can create a custom cell renderer component. Here's how you can do it:
+
+1. **Create a Custom Cell Renderer Component**: This component will contain the dxPopover element. Let's call it `PopoverRendererComponent`.
+
+```typescript
+// popover-renderer.component.ts
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-popover-renderer',
+  template: `
+    <div [dxPopover]="{ target: popoverTarget, position: { my: 'top', at: 'bottom' } }">
+      <ng-content></ng-content>
+    </div>
+  `
+})
+export class PopoverRendererComponent {
+  @Input() popoverTarget: any;
+}
+```
+
+2. **Use the Custom Cell Renderer in the ag-Grid**: Use this custom cell renderer in your ag-Grid configuration.
+
+```typescript
+// app.component.ts
+import { Component } from '@angular/core';
+import { AgRendererComponent } from 'ag-grid-angular';
+
+@Component({
+  selector: 'app-popover-renderer',
+  template: `
+    <app-popover-renderer [popoverTarget]="target">
+      <ng-content></ng-content>
+    </app-popover-renderer>
+  `
+})
+export class PopoverRendererComponent implements AgRendererComponent {
+  private params: any;
+  public target: any;
+
+  agInit(params: any): void {
+    this.params = params;
+    this.target = params.value;
+  }
+
+  refresh(params: any): boolean {
+    return false;
+  }
+}
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  columnDefs = [
+    { headerName: 'Make', field: 'make' },
+    { headerName: 'Model', field: 'model' },
+    {
+      headerName: 'Price',
+      field: 'price',
+      cellRendererFramework: PopoverRendererComponent
+    }
+  ];
+  
+  rowData = [
+    { make: 'Toyota', model: 'Celica', price: 35000 },
+    { make: 'Ford', model: 'Mondeo', price: 32000 },
+    { make: 'Porsche', model: 'Boxster', price: 72000 }
+  ];
+}
+```
+
+3. **Add the Custom Cell Renderer to the Module**: Don't forget to add the `PopoverRendererComponent` to your module's declarations.
+
+This setup will use `PopoverRendererComponent` as the cell renderer for the "Price" column in ag-Grid. Adjust the `dxPopover` options and content within `PopoverRendererComponent` as per your requirements.
