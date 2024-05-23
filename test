@@ -1,52 +1,26 @@
-import { Component } from '@angular/core';
-import { ColDef, GridOptions, GridApi, ColumnApi } from 'ag-grid-community';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-my-grid',
-  template: `
-    <button (click)="resetGrouping()">Reset Grouping</button>
-    <ag-grid-angular
-      style="width: 100%; height: 100%;"
-      class="ag-theme-alpine"
-      [gridOptions]="gridOptions"
-      [rowData]="rowData"
-      [columnDefs]="columnDefs"
-      (gridReady)="onGridReady($event)">
-    </ag-grid-angular>
-  `
+  selector: 'app-my-component',
+  template: `<div>{{ message }}</div>`
 })
-export class MyGridComponent {
-  public gridOptions: GridOptions = {};
-  public rowData: any[] = [
-    { make: 'Toyota', model: 'Celica', price: 35000 },
-    { make: 'Ford', model: 'Mondeo', price: 32000 },
-    { make: 'Porsche', model: 'Boxster', price: 72000 }
+export class MyComponent implements OnInit {
+  dynamicField: string = 'inception_date';
+  columnDefs: { field: string, hide: boolean }[] = [
+    { field: 'inception_date', hide: false },
+    { field: 'aa_date2', hide: true },
+    { field: 'bb_date3', hide: true },
+    { field: 'cc_date4', hide: true }
   ];
-  public columnDefs: ColDef[] = [
-    { field: 'make', rowGroup: true },
-    { field: 'model' },
-    { field: 'price' }
-  ];
+  message: string = '';
 
-  private gridApi!: GridApi;
-  private columnApi!: ColumnApi;
-
-  onGridReady(params: any) {
-    this.gridApi = params.api;
-    this.columnApi = params.columnApi;
+  ngOnInit() {
+    const isHidden = this.isFieldHidden(this.columnDefs, this.dynamicField);
+    this.message = `Is the field '${this.dynamicField}' hidden? ${isHidden}`;
   }
 
-  resetGrouping() {
-    // Get all current columns
-    const allColumns = this.columnApi.getAllColumns();
-    if (allColumns) {
-      // Create new column definitions with rowGroup set to false for all columns
-      const newColDefs = allColumns.map(col => {
-        const colDef = col.getColDef();
-        return { ...colDef, rowGroup: false };
-      });
-      // Update the grid with the new column definitions
-      this.gridApi.setColumnDefs(newColDefs);
-    }
+  isFieldHidden(columnDefs: { field: string, hide: boolean }[], field: string): boolean {
+    const columnDef = columnDefs.find(col => col.field === field);
+    return columnDef ? columnDef.hide : false;
   }
 }
