@@ -1,53 +1,40 @@
-import { Component } from '@angular/core';
-import { IFilterParams, IDoesFilterPassParams, IFilterComp } from 'ag-grid-community';
-
-@Component({
-  selector: 'app-custom-filter',
-  template: `
-    <div>
-      <!-- Your custom filter UI -->
-      <button (click)="onApply()">Apply</button>
-    </div>
-  `
-})
-export class CustomFilterComponent implements IFilterComp {
-  private params: IFilterParams;
-
-  agInit(params: IFilterParams): void {
-    this.params = params;
-  }
-
-  doesFilterPass(params: IDoesFilterPassParams): boolean {
-    // Implement your filtering logic
-    return true;
-  }
-
-  isFilterActive(): boolean {
-    // Implement your active check logic
-    return false;
-  }
-
-  onApply() {
-    // Apply your filtering logic
-    this.params.filterChangedCallback();
-
-    // Close the filter popup
-    (this.params as any).api.getFilterInstance(this.params.column.getColId(), (filterInstance) => {
-      if (filterInstance && filterInstance.gui) {
-        const ePopup = filterInstance.gui.querySelector('.ag-popup');
-        if (ePopup) {
-          ePopup.parentElement.removeChild(ePopup);
-        }
-      }
-    });
-  }
-
-  getModel() {
-    // Implement your model logic
-    return null;
-  }
-
-  setModel(model: any): void {
-    // Implement your model logic
-  }
+interface Filter {
+  filterType: string;
+  values: string[];
 }
+
+interface MyObject {
+  [key: string]: Filter;
+}
+
+let obj1: MyObject = {
+  new_renewed: {
+    filterType: "set",
+    values: ['New']
+  },
+  pipeline_type: {
+    filterType: "set",
+    values: ['IRS']
+  }
+};
+
+let obj2: MyObject = {
+  new_renewed: {
+    filterType: "set",
+    values: ['Traditional']
+  }
+};
+
+function updateObject(obj1: MyObject, obj2: MyObject): MyObject {
+  // Get the keys of obj2 that also exist in obj1
+  Object.keys(obj2)
+    .filter(key => obj1.hasOwnProperty(key))
+    .forEach(key => {
+      obj1[key] = obj2[key];
+    });
+  return obj1;
+}
+
+const updatedObj = updateObject(obj1, obj2);
+
+console.log(updatedObj);
