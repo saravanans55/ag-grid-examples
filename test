@@ -8,6 +8,13 @@ interface MyObject {
 }
 
 let obj1: MyObject = {
+  pipeline_type: {
+    filterType: "set",
+    values: ['IRS']
+  }
+};
+
+let obj2: MyObject = {
   new_renewed: {
     filterType: "set",
     values: ['New']
@@ -18,23 +25,18 @@ let obj1: MyObject = {
   }
 };
 
-let obj2: MyObject = {
-  new_renewed: {
-    filterType: "set",
-    values: ['Traditional']
-  }
-};
+function mergeObjects(obj1: MyObject, obj2: MyObject): MyObject {
+  // Start with a copy of obj2
+  const result: MyObject = { ...obj2 };
 
-function updateObject(obj1: MyObject, obj2: MyObject): MyObject {
-  // Get the keys of obj2 that also exist in obj1
-  Object.keys(obj2)
-    .filter(key => obj1.hasOwnProperty(key))
-    .forEach(key => {
-      obj1[key] = obj2[key];
-    });
-  return obj1;
+  // Overwrite the keys in result with the values from obj1 if they exist in both
+  Object.keys(obj1).forEach(key => {
+    result[key] = obj1[key];
+  });
+
+  return result;
 }
 
-const updatedObj = updateObject(obj1, obj2);
+const mergedObj = mergeObjects(obj1, obj2);
 
-console.log(updatedObj);
+console.log(mergedObj);
