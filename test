@@ -1,42 +1,52 @@
-interface Filter {
-  filterType: string;
-  values: string[];
-}
+import { Component } from '@angular/core';
+import { ColDef, GridOptions, GridApi, ColumnApi } from 'ag-grid-community';
 
-interface MyObject {
-  [key: string]: Filter;
-}
+@Component({
+  selector: 'app-my-grid',
+  template: `
+    <button (click)="resetGrouping()">Reset Grouping</button>
+    <ag-grid-angular
+      style="width: 100%; height: 100%;"
+      class="ag-theme-alpine"
+      [gridOptions]="gridOptions"
+      [rowData]="rowData"
+      [columnDefs]="columnDefs"
+      (gridReady)="onGridReady($event)">
+    </ag-grid-angular>
+  `
+})
+export class MyGridComponent {
+  public gridOptions: GridOptions = {};
+  public rowData: any[] = [
+    { make: 'Toyota', model: 'Celica', price: 35000 },
+    { make: 'Ford', model: 'Mondeo', price: 32000 },
+    { make: 'Porsche', model: 'Boxster', price: 72000 }
+  ];
+  public columnDefs: ColDef[] = [
+    { field: 'make', rowGroup: true },
+    { field: 'model' },
+    { field: 'price' }
+  ];
 
-let obj1: MyObject = {
-  pipeline_type: {
-    filterType: "set",
-    values: ['IRS']
+  private gridApi!: GridApi;
+  private columnApi!: ColumnApi;
+
+  onGridReady(params: any) {
+    this.gridApi = params.api;
+    this.columnApi = params.columnApi;
   }
-};
 
-let obj2: MyObject = {
-  new_renewed: {
-    filterType: "set",
-    values: ['New']
-  },
-  pipeline_type: {
-    filterType: "set",
-    values: ['IRS']
+  resetGrouping() {
+    // Get all current columns
+    const allColumns = this.columnApi.getAllColumns();
+    if (allColumns) {
+      // Create new column definitions with rowGroup set to false for all columns
+      const newColDefs = allColumns.map(col => {
+        const colDef = col.getColDef();
+        return { ...colDef, rowGroup: false };
+      });
+      // Update the grid with the new column definitions
+      this.gridApi.setColumnDefs(newColDefs);
+    }
   }
-};
-
-function mergeObjects(obj1: MyObject, obj2: MyObject): MyObject {
-  // Start with a copy of obj2
-  const result: MyObject = { ...obj2 };
-
-  // Overwrite the keys in result with the values from obj1 if they exist in both
-  Object.keys(obj1).forEach(key => {
-    result[key] = obj1[key];
-  });
-
-  return result;
 }
-
-const mergedObj = mergeObjects(obj1, obj2);
-
-console.log(mergedObj);
