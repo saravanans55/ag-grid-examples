@@ -1,50 +1,12 @@
-import { Component } from '@angular/core';
-import { ColDef, GridOptions } from 'ag-grid-community';
-
-@Component({
-  selector: 'app-root',
-  template: '<ag-grid-angular [gridOptions]="gridOptions" [rowData]="rowData" class="ag-theme-alpine" style="width: 100%; height: 100%;"></ag-grid-angular>'
-})
-export class AppComponent {
-  rowData = [
-    { year: 2021, student: 'John', marks: 85 },
-    { year: 2021, student: 'Jane', marks: 90 },
-    { year: 2022, student: 'Mike', marks: 78 },
-    { year: 2022, student: 'Anna', marks: 92 },
-  ];
-
-  gridOptions: GridOptions = {
-    columnDefs: this.getColumnDefs(),
-    groupIncludeFooter: true,
-    groupIncludeTotalFooter: true,
-    groupDisplayType: 'groupRows',
-    autoGroupColumnDef: {
-      headerName: 'Group',
-      field: 'year',
-      cellRenderer: 'agGroupCellRenderer',
-      cellRendererParams: {
-        footerValueGetter: 'data ? data.year : ""',
-      },
-    },
-    onColumnRowGroupChanged: (params) => this.updateHeaderNames(params),
-  };
-
-  getColumnDefs(): ColDef[] {
-    return [
-      { field: 'year', rowGroup: true, hide: true },
-      { field: 'student' },
-      { field: 'marks', headerName: 'Total Marks', cellRenderer: 'marksCellRenderer', aggFunc: 'sum', valueGetter: (params) => params.data ? params.data.marks : null },
-    ];
-  }
-
-  updateHeaderNames(params) {
-    const columnDefs = params.columnApi.getAllColumns().map(col => {
-      const colDef = col.getColDef();
-      if (colDef.field === 'marks') {
-        colDef.headerName = params.columnApi.getRowGroupColumns().length > 0 ? 'Grouped Total Marks' : 'Total Marks';
-      }
-      return colDef;
-    });
-    params.api.setColumnDefs(columnDefs);
-  }
+logFormErrors(form: FormGroup | FormArray, path: string = ''): void {
+  Object.keys(form.controls).forEach(key => {
+    const control = form.get(key);
+    const controlPath = path ? `${path}.${key}` : key;
+    
+    if (control instanceof FormGroup || control instanceof FormArray) {
+      this.logFormErrors(control, controlPath);
+    } else if (control.errors) {
+      console.log(`Control: ${controlPath}, Errors: ${JSON.stringify(control.errors)}`);
+    }
+  });
 }
