@@ -1,69 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
-@Component({
-  selector: 'app-example',
-  templateUrl: './example.component.html',
-})
-export class ExampleComponent implements OnInit {
-  myForm: FormGroup;
-
-  constructor(private fb: FormBuilder) {}
-
-  ngOnInit() {
-    this.myForm = this.fb.group({
-      name: [{ value: '', disabled: true }, Validators.required],
-      email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
-      age: [{ value: '', disabled: true }, Validators.required]
-    });
-  }
-
-  onSubmit() {
-    // Temporarily enable all controls to check for errors
-    this.enableAllControls(this.myForm);
-
-    // Log errors
-    this.logFormErrors(this.myForm);
-
-    // Re-disable controls after checking
-    this.disableAllControls(this.myForm);
-
-    console.log('Form Valid:', this.myForm.valid);
-    console.log('Form Value:', this.myForm.value);
-  }
-
-  logFormErrors(form: FormGroup | FormArray, path: string = ''): void {
-    Object.keys(form.controls).forEach(key => {
-      const control = form.get(key);
-      const controlPath = path ? `${path}.${key}` : key;
-
-      if (control instanceof FormGroup || control instanceof FormArray) {
-        this.logFormErrors(control, controlPath);
-      } else if (control.errors) {
-        console.log(`Control: ${controlPath}, Errors: ${JSON.stringify(control.errors)}`);
-      }
-    });
-  }
-
-  enableAllControls(form: FormGroup | FormArray): void {
-    Object.keys(form.controls).forEach(key => {
-      const control = form.get(key);
-      if (control instanceof FormGroup || control instanceof FormArray) {
-        this.enableAllControls(control);
-      } else {
-        control.enable();
-      }
-    });
-  }
-
-  disableAllControls(form: FormGroup | FormArray): void {
-    Object.keys(form.controls).forEach(key => {
-      const control = form.get(key);
-      if (control instanceof FormGroup || control instanceof FormArray) {
-        this.disableAllControls(control);
-      } else {
-        control.disable();
-      }
-    });
-  }
+function removeDuplicates(arr: string[]): string[] {
+  return Array.from(new Set(arr.map(item => item.split(',').sort().join(','))));
 }
+
+// Example usage
+const arr = ["IP", "IRS", "IP,IRS", "IP,IRS"];
+const uniqueArr = removeDuplicates(arr);
+console.log(uniqueArr);  // Output: [ 'IP', 'IRS', 'IP,IRS' ]
