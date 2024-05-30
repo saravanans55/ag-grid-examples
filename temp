@@ -1,8 +1,23 @@
-function removeDuplicates(arr: string[]): string[] {
-  return Array.from(new Set(arr.map(item => item.split(',').sort().join(','))));
+function removeDuplicates(arr: string[] | null): string[] | null {
+  if (!arr) {
+    return null;
+  }
+
+  const uniqueSet = new Set(arr.map(item => item.split(',').sort().join(',')));
+
+  // Check if there were duplicates
+  if (uniqueSet.size === arr.length) {
+    return arr; // No duplicates found, return the original array
+  }
+
+  return Array.from(uniqueSet);
 }
 
 // Example usage
-const arr = ["IP", "IRS", "IP,IRS", "IP,IRS"];
-const uniqueArr = removeDuplicates(arr);
-console.log(uniqueArr);  // Output: [ 'IP', 'IRS', 'IP,IRS' ]
+const arr1 = ["IP", "IRS", "IP,IRS", "IP,IRS"];
+const arr2 = ["IP", "IRS", "IP,IRS"];
+const arr3 = null;
+
+console.log(removeDuplicates(arr1)); // Output: [ 'IP', 'IRS', 'IP,IRS' ]
+console.log(removeDuplicates(arr2)); // Output: [ 'IP', 'IRS', 'IP,IRS' ] (no duplicates)
+console.log(removeDuplicates(arr3)); // Output: null
