@@ -1,23 +1,59 @@
-function removeDuplicates(arr: string[] | null): string[] | null {
-  if (!arr) {
-    return null;
+// Import ag-Grid and necessary modules
+import { Grid } from 'ag-grid-community';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
+import 'ag-grid-enterprise';
+
+// Define grid options
+const gridOptions = {
+  columnDefs: [
+    { field: 'athlete' },
+    { field: 'age' },
+    { field: 'country' },
+    { field: 'year' },
+    { field: 'date' },
+    { field: 'sport' },
+    { field: 'gold' },
+    { field: 'silver' },
+    { field: 'bronze' },
+    { field: 'total' }
+  ],
+  rowModelType: 'serverSide',
+  serverSideStoreType: 'full',
+  pagination: true,
+  statusBar: {
+    statusPanels: [
+      { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+      { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+      { statusPanel: 'agSelectedRowCountComponent', align: 'center' },
+      { statusPanel: 'agAggregationComponent', align: 'right' }
+    ]
+  },
+  onGridReady: (params) => {
+    const datasource = {
+      getRows: (params) => {
+        // Example server-side data fetching
+        fetch('/api/my-data-endpoint', {
+          method: 'POST',
+          body: JSON.stringify(params.request),
+          headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+          params.successCallback(data.rows, data.lastRow);
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+          params.failCallback();
+        });
+      }
+    };
+    params.api.setServerSideDatasource(datasource);
   }
+};
 
-  const uniqueSet = new Set(arr.map(item => item.split(',').sort().join(',')));
-
-  // Check if there were duplicates
-  if (uniqueSet.size === arr.length) {
-    return arr; // No duplicates found, return the original array
-  }
-
-  return Array.from(uniqueSet);
-}
-
-// Example usage
-const arr1 = ["IP", "IRS", "IP,IRS", "IP,IRS"];
-const arr2 = ["IP", "IRS", "IP,IRS"];
-const arr3 = null;
-
-console.log(removeDuplicates(arr1)); // Output: [ 'IP', 'IRS', 'IP,IRS' ]
-console.log(removeDuplicates(arr2)); // Output: [ 'IP', 'IRS', 'IP,IRS' ] (no duplicates)
-console.log(removeDuplicates(arr3)); // Output: null
+// Initialize the grid after the DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  const gridDiv = document.querySelector('#myGrid');
+  new Grid(gridDiv, gridOptions);
+});
