@@ -1,59 +1,92 @@
-// Import ag-Grid and necessary modules
-import { Grid } from 'ag-grid-community';
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-alpine.css';
-import 'ag-grid-enterprise';
+// custom-checkbox-filter.component.ts
+import { Component } from '@angular/core';
+import { IFilterAngularComp } from 'ag-grid-angular';
+import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams } from 'ag-grid-community';
 
-// Define grid options
-const gridOptions = {
-  columnDefs: [
-    { field: 'athlete' },
-    { field: 'age' },
-    { field: 'country' },
-    { field: 'year' },
-    { field: 'date' },
-    { field: 'sport' },
-    { field: 'gold' },
-    { field: 'silver' },
-    { field: 'bronze' },
-    { field: 'total' }
-  ],
-  rowModelType: 'serverSide',
-  serverSideStoreType: 'full',
-  pagination: true,
-  statusBar: {
-    statusPanels: [
-      { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-      { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
-      { statusPanel: 'agSelectedRowCountComponent', align: 'center' },
-      { statusPanel: 'agAggregationComponent', align: 'right' }
-    ]
-  },
-  onGridReady: (params) => {
-    const datasource = {
-      getRows: (params) => {
-        // Example server-side data fetching
-        fetch('/api/my-data-endpoint', {
-          method: 'POST',
-          body: JSON.stringify(params.request),
-          headers: { 'Content-Type': 'application/json' }
-        })
-        .then(response => response.json())
-        .then(data => {
-          params.successCallback(data.rows, data.lastRow);
-        })
-        .catch(error => {
-          console.error('Error fetching data:', error);
-          params.failCallback();
-        });
-      }
-    };
-    params.api.setServerSideDatasource(datasource);
+@Component({
+  selector: 'app-custom-checkbox-filter',
+  templateUrl: './custom-checkbox-filter.component.html',
+  styleUrls: ['./custom-checkbox-filter.component.css']
+})
+export class CustomCheckboxFilterComponent implements IFilterAngularComp {
+  params: IFilterParams;
+  selectedValues: string[] = [];
+  options: { name: string, icon: string }[] = [
+    { name: 'Type A', icon: 'check_box_outline_blank' },
+    { name: 'Type B', icon: 'check_box_outline_blank' },
+    { name: 'Type C', icon: 'check_box_outline_blank' },
+    { name: 'Type D', icon: 'check_box_outline_blank' }
+  ];
+
+  agInit(params: IFilterParams): void {
+    this.params = params;
   }
-};
 
-// Initialize the grid after the DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-  const gridDiv = document.querySelector('#myGrid');
-  new Grid(gridDiv, gridOptions);
-});
+  isFilterActive(): boolean {
+    return this.selectedValues.length > 0;
+  }
+
+  doesFilterPass(params: IDoesFilterPassParams): boolean {
+    return this.selectedValues.includes(params.data.record_type);
+  }
+
+  getModel() {
+    return { values: this.selectedValues };
+  }
+
+  setModel(model: any): void {
+    this.selectedValues = model ? model.values : [];
+  }
+
+  afterGuiAttached?(params?: IAfterGuiAttachedParams): void {
+    // Optional: handle any logic after the GUI is attached
+  }
+
+  onCheckboxChange(value: string, checked: boolean): void {
+    if (checked) {
+      this.selectedValues.push(value);
+    } else {
+      this.selectedValues = this.selectedValues.filter(v => v !== value);
+    }
+    this.params.filterChangedCallback();
+  }
+}
+
+
+
+
+<div class="custom-checkbox-filter">
+  <label>Record Type:</label>
+  <div *ngFor="let option of options" class="filter-option">
+    <mat-checkbox
+      (change)="onCheckboxChange(option.name, $event.checked)"
+      [checked]="selectedValues.includes(option.name)">
+      <mat-icon aria-hidden="false" aria-label="Checkbox Icon">{{ option.icon }}</mat-icon>
+      {{ option.name }}
+    </mat-checkbox>
+  </div>
+</div>
+
+
+
+
+
+.custom-checkbox-filter {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.filter-option:hover {
+  background-color: #f0f0f0;
+}
+
+mat-checkbox {
+  margin-right: 8px;
+}
