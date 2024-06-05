@@ -7,10 +7,17 @@ import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams } from 'a
   template: `
     <div class="custom-checkbox-filter">
       <label>Record Type:</label>
+      <div class="filter-option">
+        <mat-checkbox
+          (change)="onSelectAll($event.checked)"
+          [checked]="isAllSelected()">
+          Select All
+        </mat-checkbox>
+      </div>
       <div *ngFor="let option of options" class="filter-option">
         <mat-checkbox
           (change)="onCheckboxChange(option.name, $event.checked)"
-          [checked]="selectedValues.includes(option.name)">
+          [checked]="tempSelectedValues.includes(option.name)">
           {{ option.name }}
         </mat-checkbox>
       </div>
@@ -83,6 +90,18 @@ export class CustomCheckboxFilterComponent implements IFilterAngularComp {
     }
   }
 
+  onSelectAll(checked: boolean): void {
+    if (checked) {
+      this.tempSelectedValues = this.options.map(option => option.name);
+    } else {
+      this.tempSelectedValues = [];
+    }
+  }
+
+  isAllSelected(): boolean {
+    return this.tempSelectedValues.length === this.options.length;
+  }
+
   applyFilter(): void {
     this.selectedValues = [...this.tempSelectedValues];
     this.params.filterChangedCallback();
@@ -90,7 +109,7 @@ export class CustomCheckboxFilterComponent implements IFilterAngularComp {
 
   clearFilter(): void {
     this.selectedValues = [];
-    this.tempSelectedValues = [];
+    this.tempSelectedValues = this.options.map(option => option.name);
     this.params.filterChangedCallback();
   }
 }
