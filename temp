@@ -1,25 +1,57 @@
-// custom-checkbox-filter.component.ts
 import { Component } from '@angular/core';
 import { IFilterAngularComp } from 'ag-grid-angular';
 import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams } from 'ag-grid-community';
 
 @Component({
   selector: 'app-custom-checkbox-filter',
-  templateUrl: './custom-checkbox-filter.component.html',
-  styleUrls: ['./custom-checkbox-filter.component.css']
+  template: `
+    <div class="custom-checkbox-filter">
+      <label>Record Type:</label>
+      <div *ngFor="let option of options" class="filter-option">
+        <mat-checkbox
+          (change)="onCheckboxChange(option.name, $event.checked)"
+          [checked]="selectedValues.includes(option.name)">
+          {{ option.name }}
+        </mat-checkbox>
+      </div>
+      <div class="filter-actions">
+        <button mat-button (click)="applyFilter()">Apply</button>
+        <button mat-button (click)="clearFilter()">Clear</button>
+      </div>
+    </div>
+  `,
+  styles: [`
+    .custom-checkbox-filter {
+      padding: 10px;
+    }
+    .filter-option {
+      display: flex;
+      align-items: center;
+    }
+    .filter-actions {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .filter-actions button {
+      margin: 0 5px;
+    }
+  `]
 })
 export class CustomCheckboxFilterComponent implements IFilterAngularComp {
   params: IFilterParams;
   selectedValues: string[] = [];
-  options: { name: string, icon: string }[] = [
-    { name: 'Type A', icon: 'check_box_outline_blank' },
-    { name: 'Type B', icon: 'check_box_outline_blank' },
-    { name: 'Type C', icon: 'check_box_outline_blank' },
-    { name: 'Type D', icon: 'check_box_outline_blank' }
+  tempSelectedValues: string[] = [];
+  options: { name: string }[] = [
+    { name: 'Type A' },
+    { name: 'Type B' },
+    { name: 'Type C' },
+    { name: 'Type D' }
   ];
 
   agInit(params: IFilterParams): void {
     this.params = params;
+    this.tempSelectedValues = [...this.selectedValues];
   }
 
   isFilterActive(): boolean {
@@ -36,6 +68,7 @@ export class CustomCheckboxFilterComponent implements IFilterAngularComp {
 
   setModel(model: any): void {
     this.selectedValues = model ? model.values : [];
+    this.tempSelectedValues = [...this.selectedValues];
   }
 
   afterGuiAttached?(params?: IAfterGuiAttachedParams): void {
@@ -44,49 +77,20 @@ export class CustomCheckboxFilterComponent implements IFilterAngularComp {
 
   onCheckboxChange(value: string, checked: boolean): void {
     if (checked) {
-      this.selectedValues.push(value);
+      this.tempSelectedValues.push(value);
     } else {
-      this.selectedValues = this.selectedValues.filter(v => v !== value);
+      this.tempSelectedValues = this.tempSelectedValues.filter(v => v !== value);
     }
+  }
+
+  applyFilter(): void {
+    this.selectedValues = [...this.tempSelectedValues];
     this.params.filterChangedCallback();
   }
-}
 
-
-
-
-<div class="custom-checkbox-filter">
-  <label>Record Type:</label>
-  <div *ngFor="let option of options" class="filter-option">
-    <mat-checkbox
-      (change)="onCheckboxChange(option.name, $event.checked)"
-      [checked]="selectedValues.includes(option.name)">
-      <mat-icon aria-hidden="false" aria-label="Checkbox Icon">{{ option.icon }}</mat-icon>
-      {{ option.name }}
-    </mat-checkbox>
-  </div>
-</div>
-
-
-
-
-
-.custom-checkbox-filter {
-  display: flex;
-  flex-direction: column;
-}
-
-.filter-option {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  padding: 5px;
-}
-
-.filter-option:hover {
-  background-color: #f0f0f0;
-}
-
-mat-checkbox {
-  margin-right: 8px;
+  clearFilter(): void {
+    this.selectedValues = [];
+    this.tempSelectedValues = [];
+    this.params.filterChangedCallback();
+  }
 }
