@@ -1,110 +1,40 @@
-import { Component } from '@angular/core';
-import { IFilterAngularComp } from 'ag-grid-angular';
-import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams } from 'ag-grid-community';
-
-@Component({
-  selector: 'app-custom-checkbox-filter',
-  template: `
-    <div class="custom-checkbox-filter">
-      <label>Record Type:</label>
-      <div class="filter-option">
-        <mat-checkbox
-          (change)="onSelectAll($event.checked)"
-          [checked]="isAllSelected()">
-          Select All
-        </mat-checkbox>
-      </div>
-      <div *ngFor="let option of options" class="filter-option">
-        <mat-checkbox
-          (change)="onCheckboxChange(option, $event.checked)"
-          [checked]="tempSelectedValues.includes(option)">
-          {{ option }}
-        </mat-checkbox>
-      </div>
-      <div class="filter-actions">
-        <button mat-button (click)="applyFilter()">Apply</button>
-        <button mat-button (click)="clearFilter()">Clear</button>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .custom-checkbox-filter {
-      padding: 10px;
-    }
-    .filter-option {
-      display: flex;
-      align-items: center;
-    }
-    .filter-actions {
-      margin-top: 10px;
-      display: flex;
-      justify-content: space-between;
-    }
-    .filter-actions button {
-      margin: 0 5px;
-    }
-  `]
-})
-export class CustomCheckboxFilterComponent implements IFilterAngularComp {
-  params: IFilterParams;
-  selectedValues: string[] = [];
-  tempSelectedValues: string[] = [];
-  options: string[] = ['Type A', 'Type B', 'Type C', 'Type D'];
-
-  agInit(params: IFilterParams): void {
-    this.params = params;
-    this.tempSelectedValues = [...this.selectedValues];
+let AndOrAndFilterPayload = [
+  {
+    propertyId: "record_type",
+    terms: ["Opportunity"],
+    type: "exactMatch"
+  },
+  {
+    propertyId: "record_type3",
+    terms: ["Opportunity3"],
+    type: "exactMatch"
+  },
+  {
+    propertyId: "record_type2",
+    terms: ["Opportunity2"],
+    type: "exactMatch"
+  },
+  {
+    propertyId: "record_type1",
+    terms: ["Opportunity1"],
+    type: "exactMatch"
   }
+];
 
-  isFilterActive(): boolean {
-    return this.selectedValues.length > 0;
-  }
+let input = {
+  propertyId: "record_type",
+  terms: ["Opportunity"],
+  type: "exactMatch"
+};
 
-  doesFilterPass(params: IDoesFilterPassParams): boolean {
-    return this.selectedValues.includes(params.data.record_type);
-  }
+// Comparison function to check if two objects are equal
+const isEqual = (obj1, obj2) => {
+  return obj1.propertyId === obj2.propertyId &&
+         JSON.stringify(obj1.terms) === JSON.stringify(obj2.terms) &&
+         obj1.type === obj2.type;
+};
 
-  getModel() {
-    return { values: this.selectedValues };
-  }
+// Filter the array to exclude the input object
+AndOrAndFilterPayload = AndOrAndFilterPayload.filter(item => !isEqual(item, input));
 
-  setModel(model: any): void {
-    this.selectedValues = model ? model.values : [];
-    this.tempSelectedValues = [...this.selectedValues];
-  }
-
-  afterGuiAttached?(params?: IAfterGuiAttachedParams): void {
-    // Optional: handle any logic after the GUI is attached
-  }
-
-  onCheckboxChange(value: string, checked: boolean): void {
-    if (checked) {
-      this.tempSelectedValues.push(value);
-    } else {
-      this.tempSelectedValues = this.tempSelectedValues.filter(v => v !== value);
-    }
-  }
-
-  onSelectAll(checked: boolean): void {
-    if (checked) {
-      this.tempSelectedValues = [...this.options];
-    } else {
-      this.tempSelectedValues = [];
-    }
-  }
-
-  isAllSelected(): boolean {
-    return this.tempSelectedValues.length === this.options.length;
-  }
-
-  applyFilter(): void {
-    this.selectedValues = [...this.tempSelectedValues];
-    this.params.filterChangedCallback();
-  }
-
-  clearFilter(): void {
-    this.selectedValues = [];
-    this.tempSelectedValues = [...this.options];
-    this.params.filterChangedCallback();
-  }
-}
+console.log(AndOrAndFilterPayload);
