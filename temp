@@ -1,3 +1,14 @@
- Please check if we can avoid to highlight the mandatory field upon touching it... highlight should happen only after clicking on SAVE button on template - not done
-When user clicks save button on TEMPLATE and if there are mandatory fields, show a error in snack bar - "Please fill all the mandatory fields" - not done
-Change the "Save" to "Submit" on all the POPups - comments , Insured/Broker Name, Insured/Broker ID fields both on grid and template - not done
+New/Renewed - Master Type already given with Blanks
+Portfolio L1, L2
+Profit Center L2, L5
+Distribution Segment - Added new Blanks value to existing group. New Master type not required.
+Customer Segment - Added new Blanks value to existing group. New Master type not required.
+Insured Region
+Insured Country
+Broker Region
+Broker Country
+Captive Status - Use new CPT master type group - CPT Filter Captive Status
+IRS Solution Type - Added new Blanks value to existing group. New Master type not required.
+Industry Segment - Use new CPT master type group - CPT Filter Industry Segment
+Risk Appetite  - Use new CPT master type group - CPT Filter Risk Appetite
+CorSo Lob L3 - Added new Blanks value to existing group. New Master type not required.
