@@ -1,76 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-
-@Component({
-  selector: 'app-merge-arrays',
-  template: '<p>Check the console for the merged result</p>',
-})
-export class MergeArraysComponent implements OnInit {
-  ngOnInit() {
-    this.mergeArrays();
-  }
-
-  mergeArrays() {
-    // Sample data based on the provided image
-    const response = [
-      {
-        result: {
-          groupByAggregations: [],
-          metrics: { _internal_object_set_count_aggregation_: 5467718 },
-          subAggregations: [
-            {
-              buckets: [
-                {
-                  key: 'Traditional',
-                  metrics: {
-                    sum_of_gross_written_premium: 189649794803.65155,
-                    _internal_object_set_count_aggregation_: 5425428,
-                  },
-                  subAggregations: [
-                    { key: 'IP', metrics: {}, subAggregations: [] },
-                    { key: 'IRS', metrics: {}, subAggregations: [] },
-                    { key: 'ECM', metrics: {}, subAggregations: [] },
-                    { key: 'IP_IRS', metrics: {}, subAggregations: [] },
-                    { key: 'Blanks', metrics: {}, subAggregations: [] },
-                    { key: '', metrics: {}, subAggregations: [] },
-                  ],
-                },
-              ],
-            },
-          ],
-          name: 'gwp_by_pipeline_type',
-        },
-      },
-      {
-        result: {
-          groupByAggregations: [],
-          metrics: { _internal_object_set_count_aggregation_: 5467718 },
-          subAggregations: [
-            {
-              buckets: [
-                {
-                  key: 'Traditional',
-                  metrics: {
-                    sum_of_final_gwp: 180792975564.05325,
-                    _internal_object_set_count_aggregation_: 5425428,
-                  },
-                  subAggregations: [
-                    { key: 'IP', metrics: {}, subAggregations: [] },
-                    { key: 'IRS', metrics: {}, subAggregations: [] },
-                    { key: 'ECM', metrics: {}, subAggregations: [] },
-                    { key: 'IP_IRS', metrics: {}, subAggregations: [] },
-                    { key: 'Blanks', metrics: {}, subAggregations: [] },
-                    { key: '', metrics: {}, subAggregations: [] },
-                  ],
-                },
-              ],
-            },
-          ],
-          name: 'gwp_by_pipeline_type',
-        },
-      },
-    ];
-
-    // Function to merge the second array's metrics into the first array's corresponding buckets
+// Function to merge the second array's metrics into the first array's corresponding buckets
     const infuseMetrics = (firstArray, secondArray) => {
       secondArray.result.subAggregations.forEach(subAgg => {
         subAgg.buckets.forEach(bucket => {
@@ -81,11 +9,3 @@ export class MergeArraysComponent implements OnInit {
         });
       });
     };
-
-    // Infuse the metrics from the second array into the first array
-    infuseMetrics(response[0], response[1]);
-
-    // Log the updated first array
-    console.log('Updated First Array:', response[0]);
-  }
-}
