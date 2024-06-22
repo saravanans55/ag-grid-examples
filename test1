@@ -1,0 +1,51 @@
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { AgGridAngular } from 'ag-grid-angular';
+
+@Component({
+  selector: 'app-your-component',
+  templateUrl: './your-component.component.html',
+  styleUrls: ['./your-component.component.css']
+})
+export class YourComponent implements OnInit, AfterViewInit {
+  @ViewChild('cptEmailTaggingGrid') cptEmailTaggingGrid: AgGridAngular;
+
+  public myagGridOptions: any = {
+    overlayLoadingTemplate: '<span class="ag-overlay-loading-center">Please wait while your rows are loading</span>',
+    overlayNoRowsTemplate: '<span class="ag-overlay-loading-center">No rows to show</span>',
+    defaultColDef: {
+      sortable: true,
+      filter: true
+    },
+    // Other grid options...
+  };
+
+  public rowData: any[] = [];
+
+  constructor() { }
+
+  ngOnInit(): void {
+    // Simulate an async data fetch
+    setTimeout(() => {
+      this.rowData = [
+        { id: 1, name: 'Toyota', model: 'Celica', price: 35000 },
+        { id: 2, name: 'Ford', model: 'Mondeo', price: 32000 },
+        { id: 3, name: 'Porsche', model: 'Boxster', price: 72000 }
+      ];
+
+      // Hide loading overlay
+      this.cptEmailTaggingGrid.api.hideOverlay();
+    }, 2000);
+  }
+
+  ngAfterViewInit(): void {
+    // Show loading overlay
+    this.cptEmailTaggingGrid.api.showLoadingOverlay();
+  }
+
+  onGridReady(params: any) {
+    this.myagGridOptions.api = params.api;
+    this.myagGridOptions.columnApi = params.columnApi;
+    // Optionally show loading overlay here as well
+    this.myagGridOptions.api.showLoadingOverlay();
+  }
+}
