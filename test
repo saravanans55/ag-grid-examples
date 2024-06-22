@@ -1,11 +1,6 @@
-// Function to merge the second array's metrics into the first array's corresponding buckets
-    const infuseMetrics = (firstArray, secondArray) => {
-      secondArray.result.subAggregations.forEach(subAgg => {
-        subAgg.buckets.forEach(bucket => {
-          const existingBucket = firstArray.result.subAggregations[0].buckets.find(b => b.key === bucket.key);
-          if (existingBucket) {
-            existingBucket.metrics = { ...existingBucket.metrics, ...bucket.metrics };
-          }
-        });
-      });
-    };
+[3:18 PM] Sreekiran Madiri
+Please rename - 
+Distribution Segment - Distribution (Broker) Segment
+Distribution Cluster - Distribution (Broker) Cluster
+Customer Segment - Customer (Insured) Segment
+Customer Cluster - Customer (Insured) Cluster
