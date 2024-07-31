@@ -1,43 +1,64 @@
-import { Component } from '@angular/core';
+import { Injectable } from '@angular/core';
+import {
+  HttpInterceptor,
+  HttpRequest,
+  HttpHandler,
+  HttpEvent,
+  HttpParams
+} from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
-})
-export class AppComponent {
-  // Function to get parent keys
-  getParentKeys(rowNode: any): string[] {
-    const keys: string[] = [];
-
-    function traverse(node: any): void {
-      if (node) {
-        if (node.key) {
-          keys.push(node.key);
-        }
-        traverse(node.parent);
+@Injectable()
+export class CustomParamsInterceptor implements HttpInterceptor {
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const customParams = new HttpParams({
+      fromObject: {
+        // Your custom parameters here
+        customParam1: 'value1',
+        customParam2: 'value2'
       }
-    }
+    });
 
-    traverse(rowNode);
+    const modifiedRequest = request.clone({
+      params: request.params.appendAll(customParams)
+    });
 
-    return keys.reverse(); // Reverse to get the keys in order from root to leaf
-  }
-
-  // Example method to demonstrate usage
-  exampleMethod(): void {
-    const rowNode = {
-      key: 'Parent 3',
-      parent: {
-        key: 'Parent 2',
-        parent: {
-          key: 'Parent 1',
-          parent: null
-        }
-      }
-    };
-
-    const keys = this.getParentKeys(rowNode);
-    console.log(keys); // Output: ['Parent 1', 'Parent 2', 'Parent 3']
+    return next.handle(modifiedRequest);
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+
+import { AppComponent } from './app.component';
+import { CustomParamsInterceptor } from './custom-params.interceptor';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    HttpClientModule
+  ],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: CustomParamsInterceptor, multi: true }
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
