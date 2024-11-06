@@ -1,31 +1,47 @@
 <div class="image-selection-container">
   <h2>Image manager — Image Selection for Appendix</h2>
-  <p>Drag your files here or Click here to browse and upload files</p>
+  <p>Drag your files here or Click here to browse and upload files (Maximum of 50 files each, up to 200MB)</p>
   
   <div class="panel-container">
-    <!-- Left Panel (Tasks Section) -->
+    <!-- Left Panel (Tasks Section with Sub-tabs) -->
     <mat-card class="tasks-panel">
-      <h5>Tasks</h5>
-      <div class="tasks-list">
-        <mat-list>
-          <mat-list-item>216829</mat-list-item>
-          <mat-list-item>205845 - 2023, Jun 23</mat-list-item>
-          <mat-list-item>201814 - 2023, Aug 18</mat-list-item>
-          <mat-list-item>200129 - 2021, Dec 14</mat-list-item>
-        </mat-list>
-      </div>
-
-      <mat-form-field appearance="outline" class="search-field">
-        <mat-label>Search</mat-label>
-        <input matInput placeholder="Search">
-      </mat-form-field>
-      
-      <div class="image-grid">
-        <div *ngFor="let image of images" class="image-item">
-          <img src="https://via.placeholder.com/80" alt="Image">
-          <p>{{ image }}</p>
-        </div>
-      </div>
+      <mat-tab-group>
+        <mat-tab label="Tasks">
+          <div class="sub-tab-container">
+            <mat-tab-group>
+              <mat-tab label="216829">
+                <div class="task-content">
+                  <mat-form-field appearance="outline" class="search-field">
+                    <mat-label>Search</mat-label>
+                    <input matInput placeholder="Search">
+                  </mat-form-field>
+                  <div class="image-grid">
+                    <div *ngFor="let image of images" class="image-item">
+                      <img src="https://via.placeholder.com/80" alt="Image">
+                      <p>{{ image }}</p>
+                    </div>
+                  </div>
+                </div>
+              </mat-tab>
+              <mat-tab label="205845">
+                <div class="task-content">
+                  <p>Content for Task 205845</p>
+                </div>
+              </mat-tab>
+              <mat-tab label="201814">
+                <div class="task-content">
+                  <p>Content for Task 201814</p>
+                </div>
+              </mat-tab>
+              <mat-tab label="200129">
+                <div class="task-content">
+                  <p>Content for Task 200129</p>
+                </div>
+              </mat-tab>
+            </mat-tab-group>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
     </mat-card>
 
     <!-- Navigation Arrows -->
@@ -34,8 +50,8 @@
       <button mat-icon-button><mat-icon>arrow_back</mat-icon></button>
     </div>
 
-    <!-- Right Panel (Tab Section) -->
-    <mat-card class="tabs-panel">
+    <!-- Right Panel (Activities Section with Sub-tabs) -->
+    <mat-card class="activities-panel">
       <mat-tab-group>
         <mat-tab label="Narrative">
           <div class="image-grid">
@@ -45,9 +61,8 @@
             </div>
           </div>
         </mat-tab>
-
+        
         <mat-tab label="Loss Estimates">
-          <!-- Content for Loss Estimates tab if needed -->
           <div class="image-grid">
             <div *ngFor="let image of images" class="image-item">
               <img src="https://via.placeholder.com/80" alt="Image">
@@ -55,7 +70,7 @@
             </div>
           </div>
         </mat-tab>
-
+        
         <mat-tab label="Appendix">
           <mat-form-field appearance="outline" class="search-field">
             <mat-label>Search</mat-label>
@@ -70,10 +85,23 @@
             </div>
           </div>
         </mat-tab>
+        
+        <mat-tab label="Tab 4">
+          <div class="image-grid">
+            <p>Content for Tab 4</p>
+          </div>
+        </mat-tab>
+        
+        <mat-tab label="Tab 5">
+          <div class="image-grid">
+            <p>Content for Tab 5</p>
+          </div>
+        </mat-tab>
       </mat-tab-group>
     </mat-card>
   </div>
 </div>
+
 
 
 
@@ -88,9 +116,13 @@
   align-items: flex-start;
 }
 
-.tasks-panel, .tabs-panel {
+.tasks-panel, .activities-panel {
   width: 45%;
   padding: 15px;
+}
+
+.sub-tab-container, .task-content {
+  padding-top: 15px;
 }
 
 .nav-buttons {
