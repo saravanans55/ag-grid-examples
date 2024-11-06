@@ -1,3 +1,8 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M9 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
 <div class="image-selection-container">
   <h2>Image manager — Image Selection for Appendix</h2>
   <p>Drag your files here or Click here to browse and upload files (Maximum of 50 files each, up to 200MB)</p>
